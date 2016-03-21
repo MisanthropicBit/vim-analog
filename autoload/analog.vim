@@ -1,0 +1,270 @@
+" General functions {{{
+function! analog#is_open()
+    let json = analog#web#request(g:analog#web#open_url, '')
+
+    if len(json) == 0
+        return -1
+    endif
+
+    let state = matchlist(json, g:analog#patterns#json_open)
+
+    if len(state) > 1
+        return (state[1] ==# "true" ? 1 : 0)
+    endif
+
+    call analog#print_error_message("vim-analog: Unknown state for open: '%s'", state)
+    return -1
+endfunction
+
+function! analog#is_open_or_echoerr()
+    let state = analog#is_open()
+
+    echohl WarningMsg
+    if state == 0
+        echo "Analog is closed"
+    elseif state == -1
+        echo "vim-analog: No connection"
+    endif
+    echohl NONE
+
+    return state
+endfunction
+
+function! analog#get_all_matches(str, pattern)
+    let results = []
+    call substitute(a:str, a:pattern, '\=add(results, submatch(0))', 'g')
+
+    return results
+endfunction
+
+function! analog#get_staff()
+    let json = analog#web#request(g:analog#web#shifts_url, '')
+
+    return analog#parse_json_employees(json)
+endfunction
+
+function! analog#get_current_staff()
+    let json = analog#web#request(g:analog#web#shifts_url, '')
+    let staff = analog#parse_json_employees(json)
+    let hours = analog#parse_json_open_hours(json)
+    let i = analog#time_in_interval(split(strftime('%H:%M'), ':'), hours)
+
+    return staff[i]
+endfunction
+
+function! analog#get_open_hours()
+    let json = analog#web#request(g:analog#web#shifts_url, '')
+
+    if has("python")
+        " TODO!
+    endif
+
+    let hours = analog#get_all_matches(json, g:analog#patterns#json_open_hours)
+    let intervals = []
+
+    for h in hours
+        call add(intervals, matchstr(h, g:analog#patterns#json_time))
+    endfor
+
+    return intervals
+endfunction
+
+function! analog#print_error_message(format, args)
+   echohl WarningMsg
+   "echoerr printf(a:format, a:args*)
+   echohl NONE
+endfunction
+
+" Note: g:airline_section_gutter?
+let s:VimAnalogValidAirlineSections = ['a', 'b', 'c', 'x', 'y', 'z', 'warning']
+
+function! analog#update_vim_airline()
+    if index(s:VimAnalogValidAirlineSections, g:analog#vim_airline_section) == -1
+        return
+    endif
+
+    let current_state = analog#is_open()
+    let symbol = g:analog#no_connection_symbol
+    let color = 'red'
+
+    if current_state != -1
+        let symbol = (current_state ? g:analog#coffee_symbol : g:analog#no_coffee_symbol)
+        let color = (analog#is_open() ? 'green' : 'red')
+    endif
+    
+    let airline_part = airline#parts#define('analog', { 'raw': symbol, 'accent': color })
+    let airline_section = 'g:airline_section_' . g:analog#vim_airline_section
+    let airline_function = (index(s:VimAnalogValidAirlineSections[:2], g:analog#vim_airline_section) != -1 ? 'left' : 'right')
+    execute 'let ' . airline_section . ' = airline#section#create_' . airline_function . '(["analog", ' . airline_section . '])'
+endfunction
+
+function! analog#update()
+    let open = analog#is_open()
+
+    if g:analog#use_vim_airline
+        " NOTE: Use 'call AirlineRefresh'?
+        call analog#update_vim_airline()
+    elseif g:analog#use_vim_lightline
+        " TODO
+        "call analog#update_vim_lightline(open)
+    endif
+
+    let time_to_close = analog#time_to_close()
+    echom string(time_to_close)
+
+    if min(time_to_close) >= 0
+        let seconds = time_to_close[0] * 60 * 60 + time_to_close[1] * 60
+        echom seconds
+
+        if seconds <= g:analog#notify_before_close
+            call analog#notify()
+        endif
+    endif
+endfunction
+" }}}
+
+" JSON 'parsing' {{{
+function! analog#parse_json_employees(json)
+    let results = analog#get_all_matches(a:json, g:analog#patterns#json_employees)
+
+    return map(map(results, 'substitute(v:val, "\"", "", "g")'), 'split(v:val, ",")')
+endfunction
+
+function! analog#parse_json_open_hours(json)
+    let hours = analog#get_all_matches(a:json, g:analog#patterns#json_open_hours)
+    let intervals = []
+
+    for h in hours
+        call add(intervals, matchstr(h, g:analog#patterns#json_time))
+    endfor
+
+    return intervals
+endfunction
+" }}}
+
+" Time functions {{{
+" TODO: [17, 30] - [18, 26] = [-1, 4] but should by [0, 56]
+" [17, 30] - [18, 34] = [-1, -4] 
+function! analog#time_diff(time1, time2)
+    let temp = [a:time1[0] - a:time2[0], a:time1[1] - a:time2[1]]
+
+    if temp[0] > 0 && temp[1] < 0
+        let temp[0] -= 1
+        let temp[1] += 60
+    elseif temp[0] < 0 && temp[1] > 0
+        let temp[0] += 1
+        let temp[1] -= 60
+    endif
+
+    return temp
+endfunction
+
+function! analog#time_in_interval(time, intervals)
+    let [cur_hours, cur_mins] = a:time
+
+    for i in range(0, len(a:intervals) - 1, 2)
+        let [min_hour, min_mins] = split(a:intervals[i], ':')
+        let [max_hour, max_mins] = split(a:intervals[i + 1], ':')
+
+        " TODO: Fix checks
+        if cur_hours > min_hour && cur_hours < max_hour
+            return i / 2
+            "if cur_mins >= min_mins && cur_mins <= max_mins
+            "    return i
+            "endif
+        endif
+    endfor
+endfunction
+
+function! analog#time_to_close()
+    let analog_times = split(analog#get_open_hours()[-1], ':')
+    let current_time = split(strftime('%H:%M'), ':')
+
+    return analog#time_diff(analog_times, current_time)
+endfunction
+" }}}
+
+" Notifications {{{
+function! analog#notify()
+    if has('mac') || has('macunix')
+        let script_cmd = 'osascript -e "display notification \"Analog closes in 5 minutes\" with title \"vim-analog:\"'
+
+        if len(g:analog#osx_notification_sound_name) > 0
+            let script_cmd .= ' sound name \"' . g:analog#osx_notification_sound_name . '\"'
+        endif
+
+        let script_cmd .= '"'
+        call system(script_cmd)
+    endif
+endfunction
+" }}}
+
+" Echo status {{{
+function! analog#echo_open_status()
+    let state = analog#is_open()
+    " Yes: DiffAdd, No: WarningMsg
+
+    if state == 1
+        echo g:analog#coffee_symbol
+    elseif state == 0
+        echo g:analog#no_coffee_symbol
+    else
+        echo "vim-analog: No connection"
+    endif
+
+    "echohl NONE
+endfunction
+
+function! analog#echo_staff()
+    if analog#is_open_or_echoerr() > 0
+        let staff = analog#get_staff()
+        let hours = analog#get_open_hours()
+        
+        for i in range(0, len(staff) - 1)
+            let s = join(staff[i], ', ')
+            let from = hours[i * 2]
+            let to = hours[i * 2 + 1]
+
+            echo printf("%s (%s - %s)", s, from, to)
+        endfor
+    endif
+endfunction
+
+function! analog#echo_current_staff()
+    if analog#is_open_or_echoerr() > 0
+        let staff = analog#get_current_staff()
+
+        echo join(staff, ', ')
+    endif
+endfunction
+
+function! analog#echo_open_hours()
+    if !analog#is_open()
+        echohl WarningMsg
+        echo "Analog is closed"
+        echohl NONE
+        return
+    endif
+
+    let hours = analog#get_open_hours()
+
+    for i in range(0, len(hours) - 1, 2)
+        echo printf("%s - %s", hours[i], hours[i + 1])
+    endfor
+endfunction
+" }}}
+
+if g:analog#use_vim_airline || g:analog#use_vim_lightline
+    if has('nvim')
+        " Seems like neovim does not yet have periodic timers
+        " See https://github.com/neovim/neovim/issues/140://github.com/neovim/neovim/issues/1404
+    else
+        " We have to rely on the CursorHold autocommand in regular vim
+        " WARNING: This modifies 'updatetime' (see ':h updatetime')!
+        "execute 'setlocal updatetime=' . g:analog#update_interval
+        "augroup analog_statusbar_update
+           "autocmd!
+           "autocmd CursorHold * call analog#update()
+        "augroup END
+    endif
+endif

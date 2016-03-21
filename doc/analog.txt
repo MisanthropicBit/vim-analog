@@ -1,0 +1,100 @@
+*vim-analog.txt* A small plugin that informs you about the Analog café at ITU
+*vim-analog*
+             _   _  _  __    __      _______ ______  ______  _   __ ~
+            | | | || ||   \/   |    |_______|  __  ||  ____|| | / / ~
+            | | | || || |\  /| | ____  | |  | |__| || |____ | |/ /  ~
+            | | | || || | \/ | | ____  | |  |  __  ||____  ||   |   ~
+             \ v / | || |    | |       | |  | |  | | ____| || |\ \   ~
+              \_/  |_||_|    |_|       |_|  |_|  |_||______||_| \_\  ~
+
+==============================================================================
+CONTENTS                                                    *analog-contents*
+
+   01. Introduction ......................................... |analog-intro|
+   02. Configuration ................................ |analog-configuration|
+   03. Mappings .......................................... |analog-mappings|
+   04. Commands .......................................... |analog-commands|
+   05. Troubleshooting ............................ |analog-troubleshooting|
+   06. Contributions ................................ |analog-contributions|
+   07. License ............................................ |analog-license|
+
+==============================================================================
+INTRODUCTION                                                    *analog-intro*
+
+vim-analog is a small plugin to inform you about opening hours and staff at
+the Analog café at the IT University of Copenhagen. It also provides optional
+integration with vim-airline and vim-lightline.
+
+==============================================================================
+CONFIGURATION                                           *analog-configuration*
+
+The given values are the defaults.
+
+* A string denoting the current version of vim-analog. >
+    g:analog#version = '0.1.0'
+<
+* Use vim's normal statusline. >
+    g:analog#use_vim_statusline = 0
+<
+* Use vim-airline's statusline. >
+    g:analog#use_vim_airline = 0
+<
+* Use vim-lightline's statusline. >
+    g:analog#use_vim_lightline = 0
+
+* Prefer Unicode symbols in status bars and in commands. Automatically
+* disabled, if vim was not compiled with multi_byte. >
+    g:analog#prefer_symbols = 1
+<
+* Receive notifications before Analog closes (only on Mac OSX systems). Also
+* see |g:analog#notify_before_close|. >
+    g:analog#use_osx_notifications = 0
+<
+* The sound that is played when an OSX notification is made. Check
+* '~/Library/Sounds' and '/System/Library/Sounds' for available sound names. >
+    g:analog#osx_notification_sound_name = ''
+<
+* The update interval in seconds for status bar integration. Only used when
+* either |g:analog#use_vim_airline| or |g:analog#use_vim_lightline| is
+* enabled. >
+    g:analog#update_interval = 300
+<
+==============================================================================
+MAPPINGS                                                     *analog-mappings*
+
+==============================================================================
+COMMANDS                                                     *analog-commands*
+
+:AnalogVersion                                              *:AnalogVersion*
+    Prints the current version of vim-analog.
+
+:AnalogOpen                                                    *:AnalogOpen*
+    Prints "Yes" if Analog is open, "No" otherwise.
+
+:AnalogHours                                                  *:AnalogHours*
+    Lists the open hours for today.
+
+:AnalogStaff                                                  *:AnalogStaff*
+    Lists the names of all the staff working at Analog today, as well as the
+    periods in which they will work.
+
+:AnalogStaffNow                                            *:AnalogStaffNow*
+    Lists the names of the staff currently working at Analog.
+
+==============================================================================
+TROUBLESHOOTING                                       *analog-troubleshooting*
+
+Q: 
+A: 
+
+==============================================================================
+CONTRIBUTIONS                                           *analog-contributions*
+
+Contributions through pull requests are always welcome. See CONTRIBUTING.md.
+
+==============================================================================
+LICENSE                                                       *analog-license*
+
+MIT License. Copyright © 2016 Alexander Asp Bock
+
+ vim:tw=78:ts=8:ft=help:norl:
