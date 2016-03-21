@@ -7,7 +7,7 @@ A small plugin for getting information about the open hours and staff of the Ana
 University of Copenhagen from within vim.
 
 * OSX notifications before Analog closes
-* Automatically updated [`vim-airline`](https://github.com/vim-airline/vim-airline) status bar
+* Automatically updated [`vim-airline`](https://github.com/vim-airline/vim-airline) status bar (see the [gritty details](https://github.com/MisanthropicBit/cursorhold.md) of how this works)
 * Commands for getting information about Analog
 
 See the list suggested of [future improvements](https://github.com/MisanthropicBit/FUTURE.md).
@@ -27,4 +27,4 @@ Otherwise, try this:
 echo -e '\xe2\x98\x95 \xe2\x9c\x94 \xe2\x9c\x97'
 ```
 
-You should see a coffee cup, a checkmark and an X: "☕  ✔ ✗"
+You should see a coffee cup, a checkmark and an X: "☕ ✔ ✗"

@@ -23,7 +23,7 @@ function! analog#is_open_or_echoerr()
     if state == 0
         echo "Analog is closed"
     elseif state == -1
-        echo "vim-analog: No connection"
+        echo "No connection"
     endif
     echohl NONE
 
@@ -78,23 +78,36 @@ endfunction
 " Note: g:airline_section_gutter?
 let s:VimAnalogValidAirlineSections = ['a', 'b', 'c', 'x', 'y', 'z', 'warning']
 
-function! analog#update_vim_airline()
+let s:prevState = -2
+
+function! analog#update_vim_airline(state)
     if index(s:VimAnalogValidAirlineSections, g:analog#vim_airline_section) == -1
         return
     endif
 
-    let current_state = analog#is_open()
+    " Do not waste time recreating the airline section if the state did not
+    " change since last time
+    if s:prevState == a:state
+        return
+    endif
+
+    let s:prevState = a:state
     let symbol = g:analog#no_connection_symbol
     let color = 'red'
 
-    if current_state != -1
-        let symbol = (current_state ? g:analog#coffee_symbol : g:analog#no_coffee_symbol)
-        let color = (analog#is_open() ? 'green' : 'red')
+    if a:state != -1
+        let symbol = (a:state == 1 ? g:analog#coffee_symbol : g:analog#no_coffee_symbol)
+        let color = (a:state == 1 ? 'green' : 'red')
     endif
     
-    let airline_part = airline#parts#define('analog', { 'raw': symbol, 'accent': color })
+    call analog#construct_airline_section(symbol, color)
+endfunction
+
+function! analog#construct_airline_section(symbol, color)
+    let airline_part = airline#parts#define('analog', { 'raw': a:symbol, 'accent': a:color })
     let airline_section = 'g:airline_section_' . g:analog#vim_airline_section
     let airline_function = (index(s:VimAnalogValidAirlineSections[:2], g:analog#vim_airline_section) != -1 ? 'left' : 'right')
+
     execute 'let ' . airline_section . ' = airline#section#create_' . airline_function . '(["analog", ' . airline_section . '])'
 endfunction
 
@@ -103,23 +116,23 @@ function! analog#update()
 
     if g:analog#use_vim_airline
         " NOTE: Use 'call AirlineRefresh'?
-        call analog#update_vim_airline()
+        call analog#update_vim_airline(open)
     elseif g:analog#use_vim_lightline
         " TODO
         "call analog#update_vim_lightline(open)
     endif
 
-    let time_to_close = analog#time_to_close()
-    echom string(time_to_close)
+    "let time_to_close = analog#time_to_close()
+    "echom string(time_to_close)
 
-    if min(time_to_close) >= 0
-        let seconds = time_to_close[0] * 60 * 60 + time_to_close[1] * 60
-        echom seconds
+    "if min(time_to_close) >= 0
+    "    let seconds = time_to_close[0] * 60 * 60 + time_to_close[1] * 60
+    "    echom seconds
 
-        if seconds <= g:analog#notify_before_close
-            call analog#notify()
-        endif
-    endif
+    "    if seconds <= g:analog#notify_before_close
+    "        call analog#notify()
+    "    endif
+    "endif
 endfunction
 " }}}
 
@@ -209,7 +222,9 @@ function! analog#echo_open_status()
     elseif state == 0
         echo g:analog#no_coffee_symbol
     else
-        echo "vim-analog: No connection"
+        echohl WarningMsg
+        echo "No connection"
+        echohl NONE
     endif
 
     "echohl NONE
@@ -239,18 +254,13 @@ function! analog#echo_current_staff()
 endfunction
 
 function! analog#echo_open_hours()
-    if !analog#is_open()
-        echohl WarningMsg
-        echo "Analog is closed"
-        echohl NONE
-        return
+    if analog#is_open_or_echoerr() > 0
+        let hours = analog#get_open_hours()
+
+        for i in range(0, len(hours) - 1, 2)
+            echo printf("%s - %s", hours[i], hours[i + 1])
+        endfor
     endif
-
-    let hours = analog#get_open_hours()
-
-    for i in range(0, len(hours) - 1, 2)
-        echo printf("%s - %s", hours[i], hours[i + 1])
-    endfor
 endfunction
 " }}}
 
@@ -262,9 +272,9 @@ if g:analog#use_vim_airline || g:analog#use_vim_lightline
         " We have to rely on the CursorHold autocommand in regular vim
         " WARNING: This modifies 'updatetime' (see ':h updatetime')!
         "execute 'setlocal updatetime=' . g:analog#update_interval
-        "augroup analog_statusbar_update
+        augroup analog_statusbar_update
            "autocmd!
-           "autocmd CursorHold * call analog#update()
-        "augroup END
+            autocmd CursorHold * call analog#update()
+        augroup END
     endif
 endif

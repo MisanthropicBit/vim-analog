@@ -19,13 +19,11 @@ function! s:VimAnalogInit()
 
     " Create the vim-airline or vim-lightline status bars
     if g:analog#use_vim_airline
-        autocmd User AirlineAfterInit call analog#update_vim_airline()
+        autocmd User AirlineAfterInit call analog#update_vim_airline(analog#is_open())
     elseif g:analog#use_vim_lightline
         " TODO
-        echoerr "vim-analog: vim-lightline is not supported yet"
+        echoerr "vim-analog: vim-lightline is not yet supported"
     endif
-
-    "call analog#update()
 endfunction
 " }}}
 
