@@ -30,28 +30,50 @@ CONFIGURATION                                           *analog-configuration*
 
 The given values are the defaults.
 
-* A string denoting the current version of vim-analog. >
-    g:analog#version = '0.1.0'
-<
-* Use vim's normal statusline. >
-    g:analog#use_vim_statusline = 0
-<
-* Use vim-airline's statusline. >
-    g:analog#use_vim_airline = 0
-<
-* Use vim-lightline's statusline. >
-    g:analog#use_vim_lightline = 0
+* The symbol to use when Analog is open. Uses the Unicode symbols U+2615 and
+* U+2713 by default (if vim has +multi_byte). Otherwise, uses 'Analog [Open]'. >
+    g:analog#coffee_symbol = '☕  ✓'
+
+* The symbol to use when Analog is closed. Uses the Unicode symbols U+2615 and
+* U+2717 by default (if vim has +multi_byte). Otherwise, uses 'Analog [Closed]'. >
+    g:analog#no_coffee_symbol = '☕  ✗'
+
+* The symbol to use when there is no internet connection. Uses the Unicode
+* symbol U+2615 by default (if vim has +multi_byte). Otherwise, uses 'Analog [?]'. >
+    g:analog#coffee_symbol = '☕  ?'
 
 * Prefer Unicode symbols in status bars and in commands. Automatically
 * disabled, if vim was not compiled with multi_byte. >
     g:analog#prefer_symbols = 1
 <
-* Receive notifications before Analog closes (only on Mac OSX systems). Also
-* see |g:analog#notify_before_close|. >
+* If enabled, outputs information about Analog even when it is closed, instead
+* of saying that it is closed. >
+    g:analog#ignore_closed = 1
+<
+* Use vim's normal statusline. Cannot be used along with other statusline
+* plugins. >
+    g:analog#use_vim_statusline = 0
+<
+* Use vim-airline's statusline. Cannot be used along with other statusline
+* plugins or vim's default statusline. >
+    g:analog#use_vim_airline = 0
+<
+* Which vim-airline section to add state symbols to. See the |vim-airline|
+* documentation for more information. >
+    g:analog#vim_airline_section = 'x'
+<
+* Use vim-lightline's statusline. Cannot be used along with other statusline
+* plugins or vim's default statusline. Note that vim-lightline is not
+* supported yet! >
+    g:analog#use_vim_lightline = 0
+
+* Receive notifications before Analog closes (Note that this feature is only
+* available on Mac OSX systems). Also see |g:analog#notify_before_close|. >
     g:analog#use_osx_notifications = 0
 <
-* The sound that is played when an OSX notification is made. Check
-* '~/Library/Sounds' and '/System/Library/Sounds' for available sound names. >
+* The sound that is played when an OSX notification is made (Note that this
+* feature is only available on Mac OSX systems). Check '~/Library/Sounds' and
+* '/System/Library/Sounds' for available sound names. >
     g:analog#osx_notification_sound_name = ''
 <
 * The update interval in seconds for status bar integration. Only used when
@@ -69,17 +91,19 @@ COMMANDS                                                     *analog-commands*
     Prints the current version of vim-analog.
 
 :AnalogOpen                                                    *:AnalogOpen*
-    Prints "Yes" if Analog is open, "No" otherwise.
+    If |g:analog#prefer_symbols| is enabled, uses the symbols
+    |g:analog#coffee_symbol| and |g:analog#no_coffee_symbol|. Otherwise uses
+    the text equivalents for the symbols.
 
 :AnalogHours                                                  *:AnalogHours*
-    Lists the open hours for today.
+    Lists the open hours for the current date.
 
 :AnalogStaff                                                  *:AnalogStaff*
-    Lists the names of all the staff working at Analog today, as well as the
-    periods in which they will work.
+    Lists the name(s) of all the staff working at Analog for the current date,
+    as well as the periods in which they will work.
 
 :AnalogStaffNow                                            *:AnalogStaffNow*
-    Lists the names of the staff currently working at Analog.
+    Lists the name(s) of the staff currently working at Analog.
 
 ==============================================================================
 TROUBLESHOOTING                                       *analog-troubleshooting*
