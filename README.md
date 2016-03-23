@@ -1,5 +1,5 @@
-vim-analog v0.1.0
-=================
+vim-analog v0.1.0 :coffee:
+==========================
 
 ![Example of using vim-analog](https://github.com/MisanthropicBit/vim-analog/demos/demo.gif)
 
@@ -7,10 +7,12 @@ A small plugin for getting information about the open hours and staff of the Ana
 University of Copenhagen from within vim.
 
 * OSX notifications before Analog closes
-* Automatically updated [`vim-airline`](https://github.com/vim-airline/vim-airline) status bar (see the [gritty details](https://github.com/MisanthropicBit/cursorhold.md) of how this works)
+* Automatically updated [`vim-airline`](https://github.com/vim-airline/vim-airline) status bar (see the [gritty details](https://github.com/MisanthropicBit/vim-analog/cursorhold.md) of how this works)
 * Commands for getting information about Analog
 
-See the list suggested of [future improvements](https://github.com/MisanthropicBit/FUTURE.md).
+[Contributions are always welcome](https://github.com/MisanthropicBit/vim-analog/CONTRIBUTING.md)!
+
+See the list suggested of [future improvements](https://github.com/MisanthropicBit/vim-analog/FUTURE.md).
 
 Unicode support
 ---------------
