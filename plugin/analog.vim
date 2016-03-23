@@ -19,7 +19,7 @@ function! s:VimAnalogInit()
 
     " Create the vim-airline or vim-lightline status bars
     if g:analog#use_vim_airline
-        autocmd User AirlineAfterInit call analog#update_vim_airline(analog#is_open())
+        autocmd User AirlineAfterInit call analog#update_vim_airline(analog#is_open()) | execute "normal! :AirlineRefresh"
     elseif g:analog#use_vim_lightline
         " TODO
         echoerr "vim-analog: vim-lightline is not yet supported"
@@ -30,13 +30,6 @@ endfunction
 " Configuration variables {{{
 " General {{{
 let g:analog#version = "0.1.0"
-let g:analog#prefer_symbols = 1
-
-let g:analog#use_vim_statusline = 0
-let g:analog#use_vim_airline = 1
-let g:analog#vim_airline_section = 'x'
-let g:analog#vim_airline_custom_call = ''
-let g:analog#use_vim_lightline = 0
 
 if has('multi_byte')
     " The unicode representation of the coffee cup symbol,
@@ -48,10 +41,19 @@ if has('multi_byte')
     let g:analog#no_coffee_symbol = '☕  ✗'
     let g:analog#no_connection_symbol = '☕  ?'
 else
-    let g:analog#coffee_symbol = 'Analog [OPEN]'
-    let g:analog#no_coffee_symbol = 'Analog [CLOSED]'
+    let g:analog#coffee_symbol = 'Analog [Open]'
+    let g:analog#no_coffee_symbol = 'Analog [Closed]'
     let g:analog#no_connection_symbol = 'Analog [?]'
 endif
+
+let g:analog#prefer_symbols = 1
+let g:analog#ignore_closed = 1
+let g:analog#use_vim_statusline = 0
+let g:analog#use_vim_airline = 1
+let g:analog#vim_airline_section = 'x'
+let g:analog#vim_airline_custom_call = ''
+let g:analog#use_vim_lightline = 0
+
 
 if has('mac') || has('macunix')
     let g:analog#use_osx_notifications = 0
@@ -74,7 +76,8 @@ let g:analog#web#shifts_url = g:analog#web#base_url . '/shifts/today'
 let g:analog#patterns#json_open = '\v^\{\"open\":(false|true)\}$'
 let g:analog#patterns#json_employees = '\v\"Employees\":\[\zs(.{-})\ze\]'
 let g:analog#patterns#json_open_hours = '\v\"%(Open|Close)\":\"\zs(.{-})\ze\"'
-let g:analog#patterns#json_time = '\v\d{4}-\d{2}-\d{2}T\zs(\d{2}:\d{2})\ze:\d{2}%(\+|-)\d{2}:\d{2}'
+let g:analog#patterns#json_time = '\v\d{4}-\d{2}-\d{2}T\zs\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
+let g:analog#patterns#json_full_date = '\v\zs\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
 " }}}
 
 " Commands {{{
