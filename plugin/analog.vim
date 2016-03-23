@@ -12,8 +12,8 @@ function! s:VimAnalogInit()
         let g:analog#use_osx_notifications = 0
     endif
 
-    if g:analog#use_vim_airline && g:analog#use_vim_lightline
-        echoerr "vim-analog: Cannot both use vim-airline and vim-lightline"
+    if g:analog#use_vim_statusline + g:analog#use_vim_airline + g:analog#use_vim_lightline > 1
+        echoerr "vim-analog: Cannot simultaneously use the regular statusline, vim-airline or vim-lightline"
         return
     endif
 

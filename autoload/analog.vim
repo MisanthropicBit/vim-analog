@@ -111,10 +111,20 @@ function! analog#construct_airline_section(symbol, color)
     execute 'let ' . airline_section . ' = airline#section#create_' . airline_function . '(["analog", ' . airline_section . '])'
 endfunction
 
+function! analog#get_current_symbol()
+    return [g:analog#no_coffee_symbol, g:analog#coffee_symbol, g:analog#no_connection_symbol][analog#is_open()]
+endfunction
+
+function! AnalogDefaultStatusline()
+    return '%<%f %h%r%=' . g:analog#coffee_symbol . ' %-14.(%l,%c%V%) %P'
+endfunction
+
 function! analog#update()
     let open = analog#is_open()
 
-    if g:analog#use_vim_airline
+    if g:analog#use_vim_statusline
+        set statusline=%!AnalogDefaultStatusline()
+    elseif g:analog#use_vim_airline
         " NOTE: Use 'call AirlineRefresh'?
         call analog#update_vim_airline(open)
     elseif g:analog#use_vim_lightline
@@ -159,6 +169,12 @@ endfunction
 " TODO: [17, 30] - [18, 26] = [-1, 4] but should by [0, 56]
 " [17, 30] - [18, 34] = [-1, -4] 
 function! analog#time_diff(time1, time2)
+    " Do not waste time calculating time differences between times on
+    " different days
+    if time1[2] != time2[2]
+        return
+    endif
+
     let temp = [a:time1[0] - a:time2[0], a:time1[1] - a:time2[1]]
 
     if temp[0] > 0 && temp[1] < 0
@@ -213,21 +229,13 @@ endfunction
 " }}}
 
 " Echo status {{{
+" Yes: DiffAdd, No: WarningMsg
 function! analog#echo_open_status()
-    let state = analog#is_open()
-    " Yes: DiffAdd, No: WarningMsg
+    let state = analog#is_open_or_echoerr()
 
-    if state == 1
-        echo g:analog#coffee_symbol
-    elseif state == 0
-        echo g:analog#no_coffee_symbol
-    else
-        echohl WarningMsg
-        echo "No connection"
-        echohl NONE
+    if state != -1
+        echo (state == 1 ? g:analog#coffee_symbol : g:analog#no_coffee_symbol)
     endif
-
-    "echohl NONE
 endfunction
 
 function! analog#echo_staff()
