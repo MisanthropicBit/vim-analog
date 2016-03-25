@@ -12,7 +12,7 @@ CONTENTS                                                    *analog-contents*
 
    01. Introduction ......................................... |analog-intro|
    02. Configuration ................................ |analog-configuration|
-   03. Mappings .......................................... |analog-mappings|
+   03. Statuslines .....................................|analog-statuslines|
    04. Commands .......................................... |analog-commands|
    05. Troubleshooting ............................ |analog-troubleshooting|
    06. Contributions ................................ |analog-contributions|
@@ -82,7 +82,29 @@ The given values are the defaults.
     g:analog#update_interval = 300
 <
 ==============================================================================
-MAPPINGS                                                     *analog-mappings*
+STATUSLINES                                               *analog-statuslines*
+
+vim-analog currently supports integration with vim's regular statusline and
+vim-airline, with support for vim-lightline planned.
+
+* Configuring vim's regular statusline:
+
+* Configuring vim-airline:
+
+
+Note: `vim` provides no built-in timer support, i.e. periodically calling a
+function every 100 milliseconds. Nonetheless, `vim-analog` needs some notion
+of periodic calls to be able to support updated status bar changes.
+
+The closest thing is the |autocmd| |CursorHold|. If `vim` receives no input for
+|updatetime| milliseconds the command in the declaration of the |autocmd| is
+executed. However, many plugins rely on this functionaility and change the
+global value of |updatetime|. Therefore, to remain as conflict-free as possible,
+`vim-analog` does not change its value, but instead assumes that it has been set
+to a reasonable value.
+
+For more information, see |CursorHold|. For a more lengthy discussion on, see:
+https://news.floobits.com/2013/09/16/adding-realtime-collaboration-to-vim/
 
 ==============================================================================
 COMMANDS                                                     *analog-commands*
