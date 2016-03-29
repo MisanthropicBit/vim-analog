@@ -1,11 +1,12 @@
 *vim-analog.txt* A small plugin that informs you about the Analog café at ITU
 *vim-analog*
-             _   _  _  __    __      _______ ______  ______  _   __ ~
-            | | | || ||   \/   |    |_______|  __  ||  ____|| | / / ~
-            | | | || || |\  /| | ____  | |  | |__| || |____ | |/ /  ~
-            | | | || || | \/ | | ____  | |  |  __  ||____  ||   |   ~
-             \ v / | || |    | |       | |  | |  | | ____| || |\ \   ~
-              \_/  |_||_|    |_|       |_|  |_|  |_||______||_| \_\  ~
+
+       _                                   _             ~
+__   _(_)_ __ ___         __ _ _ __   __ _| | ___   __ _ ~
+\ \ / / | '_ ` _ \ _____ / _` | '_ \ / _` | |/ _ \ / _` |~
+ \ V /| | | | | | |_____| (_| | | | | (_| | | (_) | (_| |~
+  \_/ |_|_| |_| |_|      \__,_|_| |_|\__,_|_|\___/ \__, |~
+                                                   |___/ ~
 
 ==============================================================================
 CONTENTS                                                    *analog-contents*
@@ -151,7 +152,8 @@ Q: Why does the state in my statusline not always update when it should?
 A: Probably due to two reasons. Firstly, the |CursorHold| |autocmd| is just an
    approximation of true timer behaviour in vim. Secondly, this plugin relies
    on Café Analog's online API, and it is not unknown (as of now) if this is
-   manually (and thus prone to be imprecise) or automatically updated.
+   manually (and thus prone to be imprecise) or automatically updated. Also
+   see the note under |analog-statuslines|.
 
 ==============================================================================
 CONTRIBUTIONS                                           *analog-contributions*
