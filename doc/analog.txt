@@ -11,12 +11,13 @@
 CONTENTS                                                    *analog-contents*
 
    01. Introduction ......................................... |analog-intro|
-   02. Configuration ................................ |analog-configuration|
-   03. Statuslines .....................................|analog-statuslines|
-   04. Commands .......................................... |analog-commands|
-   05. Troubleshooting ............................ |analog-troubleshooting|
-   06. Contributions ................................ |analog-contributions|
-   07. License ............................................ |analog-license|
+   02. Requirements .................................. |analog-requirements|
+   03. Configuration ................................ |analog-configuration|
+   04. Statuslines .....................................|analog-statuslines|
+   05. Commands .......................................... |analog-commands|
+   06. Troubleshooting ............................ |analog-troubleshooting|
+   07. Contributions ................................ |analog-contributions|
+   08. License ............................................ |analog-license|
 
 ==============================================================================
 INTRODUCTION                                                    *analog-intro*
@@ -24,6 +25,14 @@ INTRODUCTION                                                    *analog-intro*
 vim-analog is a small plugin to inform you about opening hours and staff at
 the Analog café at the IT University of Copenhagen. It also provides optional
 integration with vim-airline and vim-lightline.
+
+==============================================================================
+REQUIREMENTS                                             *analog-requirements*
+
+To query the information of the Analog API, vim-analog needs either curl, wget
+or python installed. If more than one is available and one of them is python,
+then python is used, as it provides better error-handling, parsing and
+datetime manipulation.
 
 ==============================================================================
 CONFIGURATION                                           *analog-configuration*
@@ -88,9 +97,17 @@ vim-analog currently supports integration with vim's regular statusline and
 vim-airline, with support for vim-lightline planned.
 
 * Configuring vim's regular statusline:
+  Set |g:analog#use_vim_statusline| to 1, and the statusbar is automatically
+  set up. The default vim statusline is assumed, and thus extended. If you
+  would like to customise it yourself, ...
 
 * Configuring vim-airline:
+  Set |g:analog#use_vim_airline| to 1, and the statusbar is automatically set
+  up. Use |g:analog#vim_airline_section| to specify which section to extend.
+  Refer to the vim-airline documentation for more information.
 
+* Configuring vim-lightline:
+  This plugin is not supported yet.
 
 Note: `vim` provides no built-in timer support, i.e. periodically calling a
 function every 100 milliseconds. Nonetheless, `vim-analog` needs some notion
@@ -130,13 +147,16 @@ COMMANDS                                                     *analog-commands*
 ==============================================================================
 TROUBLESHOOTING                                       *analog-troubleshooting*
 
-Q: 
-A: 
+Q: Why does the state in my statusline not always update when it should?
+A: Probably due to two reasons. Firstly, the |CursorHold| |autocmd| is just an
+   approximation of true timer behaviour in vim. Secondly, this plugin relies
+   on Café Analog's online API, and it is not unknown (as of now) if this is
+   manually (and thus prone to be imprecise) or automatically updated.
 
 ==============================================================================
 CONTRIBUTIONS                                           *analog-contributions*
 
-Contributions through pull requests are always welcome. See CONTRIBUTING.md.
+Contributions are always welcome. See CONTRIBUTING.md.
 
 ==============================================================================
 LICENSE                                                       *analog-license*
