@@ -1,13 +1,13 @@
 *vim-analog.txt* A small plugin that informs you about the Analog café at ITU
 *vim-analog*
 
-                                                               )     ~
-       _                                   _                  (   )  ~
-__   _(_)_ __ ___         __ _ _ __   __ _| | ___   __ _      .-)-(. ~
-\ \ / / | '_ ` _ \ _____ / _` | '_ \ / _` | |/ _ \ / _` |   _|`----´|~
- \ V /| | | | | | |_____| (_| | | | | (_| | | (_) | (_| |  | |      |~
-  \_/ |_|_| |_| |_|      \__,_|_| |_|\__,_|_|\___/ \__, |  `-|      |~
-                                                   |___/      `----' ~
+                                                                   )     ~
+          _                                   _                   (   )  ~
+   __   _(_)_ __ ___         __ _ _ __   __ _| | ___   __ _       .-)-(. ~
+   \ \ / / | '_ ` _ \ _____ / _` | '_ \ / _` | |/ _ \ / _` |    _|`----´|~
+    \ V /| | | | | | |_____| (_| | | | | (_| | | (_) | (_| |   | |      |~
+     \_/ |_|_| |_| |_|      \____|_| |_|\____|_|\___/ \__, |   `-|      |~
+                                                      |___/       `----' ~
 
 ==============================================================================
 CONTENTS                                                    *analog-contents*
@@ -32,9 +32,10 @@ integration with vim-airline and vim-lightline.
 REQUIREMENTS                                             *analog-requirements*
 
 To query the information of the Analog API, vim-analog needs either curl, wget
-or python installed. If more than one is available and one of them is python,
-then python is used, as it provides better error-handling, parsing and
-datetime manipulation.
+or python installed.
+
+If more than one is available and one of them is python, then python is used,
+as it provides better error-handling, parsing and datetime manipulation.
 
 ==============================================================================
 CONFIGURATION                                           *analog-configuration*
@@ -57,8 +58,8 @@ The given values are the defaults.
 * disabled, if vim was not compiled with multi_byte. >
     g:analog#prefer_symbols = 1
 <
-* If enabled, outputs information about Analog even when it is closed, instead
-* of saying that it is closed. >
+* If enabled, outputs any available information about Analog even when it is
+* closed, instead of issuing an error message. >
     g:analog#ignore_closed = 1
 <
 * Use vim's normal statusline. Cannot be used along with other statusline
@@ -104,9 +105,15 @@ vim-airline, with support for vim-lightline planned.
   would like to customise it yourself, ...
 
 * Configuring vim-airline:
-  Set |g:analog#use_vim_airline| to 1, and the statusbar is automatically set
-  up. Use |g:analog#vim_airline_section| to specify which section to extend.
-  Refer to the vim-airline documentation for more information.
+  If |g:analog#use_vim_airline| is set to 1 in your vimrc, vim-analog provides
+  a new part called 'analog' which you can use to modify your statusline.
+  For example: >
+    let g:airline_section_x = airline#section#create_right(['analog', 'x'])
+
+<  Creates a right separator between the analog part and the airline 'x' part
+  (which is usually the filetype).
+  
+  See |airline|, |airline-parts| and |airline-sections| for more information.
 
 * Configuring vim-lightline:
   This plugin is not supported yet.
