@@ -1,5 +1,7 @@
 tags
 .swp
+logos.txt
+git_headline.txt
 *.sh
 *.pyc
 *.tasks
