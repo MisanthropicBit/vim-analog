@@ -89,42 +89,6 @@ function! analog#print_error_message(format, args)
    echohl NONE
 endfunction
 
-" Note: g:airline_section_gutter?
-let s:VimAnalogValidAirlineSections = ['a', 'b', 'c', 'x', 'y', 'z', 'warning']
-
-let s:prevState = -2
-
-function! analog#update_vim_airline(state)
-    if index(s:VimAnalogValidAirlineSections, g:analog#vim_airline_section) == -1
-        return
-    endif
-
-    " Do not waste time recreating the airline section if the state did not
-    " change since last time
-    if s:prevState == a:state
-        return
-    endif
-
-    let s:prevState = a:state
-    let symbol = g:analog#no_connection_symbol
-    let color = 'red'
-
-    if a:state != -1
-        let symbol = (a:state == 1 ? g:analog#coffee_symbol : g:analog#no_coffee_symbol)
-        let color = (a:state == 1 ? 'green' : 'red')
-    endif
-    
-    call analog#construct_airline_section(symbol, color)
-endfunction
-
-function! analog#construct_airline_section(symbol, color)
-    let airline_part = airline#parts#define('analog', { 'raw': a:symbol, 'accent': a:color })
-    let airline_section = 'g:airline_section_' . g:analog#vim_airline_section
-    let airline_function = (index(s:VimAnalogValidAirlineSections[:2], g:analog#vim_airline_section) != -1 ? 'left' : 'right')
-
-    execute 'let ' . airline_section . ' = airline#section#create_' . airline_function . '(["analog", ' . airline_section . '])'
-endfunction
-
 function! analog#get_current_symbol()
     return [g:analog#no_coffee_symbol, g:analog#coffee_symbol, g:analog#no_connection_symbol][analog#is_open()]
 endfunction
@@ -135,16 +99,6 @@ endfunction
 
 function! analog#update()
     let open = analog#is_open()
-
-    if g:analog#use_vim_statusline
-        set statusline=%!AnalogDefaultStatusline()
-    elseif g:analog#use_vim_airline
-        " NOTE: Use 'call AirlineRefresh'?
-        call analog#update_vim_airline(open)
-    elseif g:analog#use_vim_lightline
-        " TODO
-        "call analog#update_vim_lightline(open)
-    endif
 
     "let time_to_close = analog#time_to_close()
     "echom string(time_to_close)
@@ -285,18 +239,3 @@ function! analog#echo_open_hours()
     endif
 endfunction
 " }}}
-
-if g:analog#use_vim_airline || g:analog#use_vim_lightline
-    if has('nvim')
-        " Seems like neovim does not yet have periodic timers
-        " See https://github.com/neovim/neovim/issues/140://github.com/neovim/neovim/issues/1404
-    else
-        " We have to rely on the CursorHold autocommand in regular vim
-        " WARNING: This modifies 'updatetime' (see ':h updatetime')!
-        "execute 'setlocal updatetime=' . g:analog#update_interval
-        augroup analog_statusbar_update
-           "autocmd!
-            autocmd CursorHold * call analog#update()
-        augroup END
-    endif
-endif
