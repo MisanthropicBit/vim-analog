@@ -7,8 +7,11 @@ function! s:AnalogCurlRequest(url, options)
 endf
 
 function! s:AnalogWgetRequest(url, options)
-    echo "Using wget"
     return system("wget -qO - " . a:url)
+endfunction
+
+function! s:AnalogWebRequestMissing(url, options)
+    return ''
 endfunction
 
 " TODO: Add support for python
@@ -16,6 +19,9 @@ if executable('curl')
     let s:AnalogWebRequest = function("s:AnalogCurlRequest")
 elseif executable('wget')
     let s:AnalogWebRequest = function("s:AnalogWgetRequest")
+else
+    let s:AnalogWebRequest = function("s:AnalogWebRequestMissing")
+    echoerr "vim-analog: Either curl, wget or python must be installed"
 endif
 
 function! analog#web#request(url, options)
