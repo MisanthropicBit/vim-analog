@@ -39,6 +39,7 @@ command! AnalogOpen call analog#echo_open_status()
 command! AnalogHours call analog#echo_open_hours()
 command! AnalogStaff call analog#echo_staff()
 command! AnalogStaffNow call analog#echo_current_staff()
+command! AnalogTimeToClose call analog#echo_time_to_close()
 " }}}
 
 " Initialise vim-analog

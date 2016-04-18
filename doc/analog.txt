@@ -81,6 +81,10 @@ COMMANDS                                                     *analog-commands*
 :AnalogStaffNow                                            *:AnalogStaffNow*
     Lists the name(s) of the staff currently working at Analog.
 
+:AnalogTimeToClose                                      *:AnalogTimeToClose*
+    Echoes the hours and minutes until Analog closes, or an error message if
+    Analog is already closed for the day.
+
 ==============================================================================
 TROUBLESHOOTING                                       *analog-troubleshooting*
 

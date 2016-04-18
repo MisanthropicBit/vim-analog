@@ -122,43 +122,28 @@ endfunction
 " }}}
 
 " Time functions {{{
-" TODO: [17, 30] - [18, 26] = [-1, 4] but should by [0, 56]
-" [17, 30] - [18, 34] = [-1, -4] 
 function! analog#time_diff(time1, time2)
     " Do not waste time calculating time differences between times on
     " different days
-    if time1[2] != time2[2]
-        return
-    endif
+    "if a:time1[2] != a:time2[2]
+    "    return
+    "endif
 
     let temp = [a:time1[0] - a:time2[0], a:time1[1] - a:time2[1]]
 
-    if temp[0] > 0 && temp[1] < 0
-        let temp[0] -= 1
-        let temp[1] += 60
-    elseif temp[0] < 0 && temp[1] > 0
-        let temp[0] += 1
-        let temp[1] -= 60
+    if temp[0] < 0
+        if temp[1] > 0
+            let temp[0] += 1
+            let temp[1] = 60 - temp[1]
+        endif
+    else
+        if temp[1] < 0
+            let temp[0] -= 1
+            let temp[1] = 60 + temp[1]
+        endif
     endif
 
     return temp
-endfunction
-
-function! analog#time_in_interval(time, intervals)
-    let [cur_hours, cur_mins] = a:time
-
-    for i in range(0, len(a:intervals) - 1, 2)
-        let [min_hour, min_mins] = split(a:intervals[i], ':')
-        let [max_hour, max_mins] = split(a:intervals[i + 1], ':')
-
-        " TODO: Fix checks
-        if cur_hours > min_hour && cur_hours < max_hour
-            return i / 2
-            "if cur_mins >= min_mins && cur_mins <= max_mins
-            "    return i
-            "endif
-        endif
-    endfor
 endfunction
 
 function! analog#time_to_close()
@@ -172,11 +157,7 @@ endfunction
 " Echo status {{{
 " Yes: DiffAdd, No: WarningMsg
 function! analog#echo_open_status()
-    let state = analog#is_open_or_echoerr()
-
-    if state != -1
-        echo (state == 1 ? g:analog#coffee_symbol : g:analog#no_coffee_symbol)
-    endif
+    echo analog#get_current_symbol()
 endfunction
 
 function! analog#echo_staff()
@@ -211,4 +192,14 @@ function! analog#echo_open_hours()
         endfor
     endif
 endfunction
+
+function! analog#echo_time_to_close()
+    if analog#is_open_or_echoerr() > 0
+        let diff = analog#time_to_close()
+
+        echo printf("Analog closes in %s hour(s) and %s minute(s)", diff[0], diff[1])
+    endif
+endfunction
 " }}}
+
+" vim: foldmethod=marker

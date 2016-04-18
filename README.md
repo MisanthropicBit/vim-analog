@@ -10,6 +10,22 @@ University of Copenhagen from within vim.
 
 See the list suggested of [future improvements](https://github.com/MisanthropicBit/vim-analog/FUTURE.md).
 
+Installation
+------------
+
+You can install `vim-analog` using Pathogen:
+
+```
+cd ~/.vim/bundle
+git clone https://github.com/MisanthropicBit/vim-task
+```
+
+Alternatively, you can use Vundle by adding the following to your .vimrc:
+
+    Plugin 'MisanthropicBit/vim-task'
+
+Or any other plugin manager you might prefer.
+
 Unicode support
 ---------------
 
