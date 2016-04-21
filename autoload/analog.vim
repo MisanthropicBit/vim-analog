@@ -146,6 +146,23 @@ function! analog#time_diff(time1, time2)
     return temp
 endfunction
 
+function! analog#time_in_interval(time, intervals)
+    let [cur_hours, cur_mins] = a:time
+
+    for i in range(0, len(a:intervals) - 1, 2)
+        let [min_hour, min_mins] = split(a:intervals[i], ':')
+        let [max_hour, max_mins] = split(a:intervals[i + 1], ':')
+
+        " TODO: Fix checks
+        if cur_hours > min_hour && cur_hours < max_hour
+            return i / 2
+            "if cur_mins >= min_mins && cur_mins <= max_mins
+            "    return i
+            "endif
+        endif
+    endfor
+endfunction
+
 function! analog#time_to_close()
     let analog_times = split(analog#get_open_hours()[-1], ':')
     let current_time = split(strftime('%H:%M'), ':')
