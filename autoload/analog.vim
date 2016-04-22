@@ -12,7 +12,7 @@ let g:analog#patterns#json_time = '\v\d{4}-\d{2}-\d{2}T\zs\d{2}:\d{2}\ze:\d{2}%(
 let g:analog#patterns#json_full_date = '\v\zs\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
 " }}}
 
-" General functions {{{
+" General {{{
 function! analog#is_open()
     let json = analog#web#request(g:analog#web#open_url, '')
 
@@ -44,24 +44,17 @@ function! analog#is_open_or_echoerr()
     return state
 endfunction
 
-function! analog#get_all_matches(str, pattern)
-    let results = []
-    call substitute(a:str, a:pattern, '\=add(results, submatch(0))', 'g')
-
-    return results
-endfunction
-
 function! analog#get_staff()
     let json = analog#web#request(g:analog#web#shifts_url, '')
 
-    return analog#parse_json_employees(json)
+    return analog#json#parse_json_employees(json)
 endfunction
 
 function! analog#get_current_staff()
     let json = analog#web#request(g:analog#web#shifts_url, '')
-    let staff = analog#parse_json_employees(json)
-    let hours = analog#parse_json_open_hours(json)
-    let i = analog#time_in_interval(split(strftime('%H:%M'), ':'), hours)
+    let staff = analog#json#parse_json_employees(json)
+    let hours = analog#json#parse_json_open_hours(json)
+    let i = analog#time#time_in_interval(split(strftime('%H:%M'), ':'), hours)
 
     return staff[i]
 endfunction
@@ -83,6 +76,13 @@ function! analog#get_open_hours()
     return intervals
 endfunction
 
+function! analog#get_all_matches(str, pattern)
+    let results = []
+    call substitute(a:str, a:pattern, '\=add(results, submatch(0))', 'g')
+
+    return results
+endfunction
+
 function! analog#print_error_message(format, args)
    echohl WarningMsg
    "echoerr printf(a:format, a:args*)
@@ -91,75 +91,6 @@ endfunction
 
 function! analog#get_current_symbol()
     return [g:analog#no_coffee_symbol, g:analog#coffee_symbol, g:analog#no_connection_symbol][analog#is_open()]
-endfunction
-" }}}
-
-" JSON 'parsing' {{{
-function! analog#parse_json_employees(json)
-    let results = analog#get_all_matches(a:json, g:analog#patterns#json_employees)
-
-    return map(map(results, 'substitute(v:val, "\"", "", "g")'), 'split(v:val, ",")')
-endfunction
-
-function! analog#parse_json_open_hours(json)
-    let hours = analog#get_all_matches(a:json, g:analog#patterns#json_open_hours)
-    let intervals = []
-
-    for h in hours
-        call add(intervals, matchstr(h, g:analog#patterns#json_time))
-    endfor
-
-    return intervals
-endfunction
-" }}}
-
-" Time functions {{{
-function! analog#time_diff(time1, time2)
-    " Do not waste time calculating time differences between times on
-    " different days
-    "if a:time1[2] != a:time2[2]
-    "    return
-    "endif
-
-    let temp = [a:time1[0] - a:time2[0], a:time1[1] - a:time2[1]]
-
-    if temp[0] < 0
-        if temp[1] > 0
-            let temp[0] += 1
-            let temp[1] = 60 - temp[1]
-        endif
-    else
-        if temp[1] < 0
-            let temp[0] -= 1
-            let temp[1] = 60 + temp[1]
-        endif
-    endif
-
-    return temp
-endfunction
-
-function! analog#time_in_interval(time, intervals)
-    let [cur_hours, cur_mins] = a:time
-
-    for i in range(0, len(a:intervals) - 1, 2)
-        let [min_hour, min_mins] = split(a:intervals[i], ':')
-        let [max_hour, max_mins] = split(a:intervals[i + 1], ':')
-
-        " TODO: Fix checks
-        if cur_hours > min_hour && cur_hours < max_hour
-            return i / 2
-            "if cur_mins >= min_mins && cur_mins <= max_mins
-            "    return i
-            "endif
-        endif
-    endfor
-endfunction
-
-function! analog#time_to_close()
-    let analog_times = split(analog#get_open_hours()[-1], ':')
-    let current_time = split(strftime('%H:%M'), ':')
-
-    return analog#time_diff(analog_times, current_time)
 endfunction
 " }}}
 
@@ -204,7 +135,7 @@ endfunction
 
 function! analog#echo_time_to_close()
     if analog#is_open_or_echoerr() > 0
-        let diff = analog#time_to_close()
+        let diff = analog#time#time_to_close()
 
         echo printf("Analog closes in %s hour(s) and %s minute(s)", diff[0], diff[1])
     endif
