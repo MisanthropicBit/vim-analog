@@ -8,17 +8,27 @@ function! analog#time#time_diff(time1, time2)
 
     let temp = [a:time1[0] - a:time2[0], a:time1[1] - a:time2[1]]
 
-    if temp[0] < 0
-        if temp[1] > 0
-            let temp[0] += 1
-            let temp[1] = 60 - temp[1]
-        endif
-    else
-        if temp[1] < 0
-            let temp[0] -= 1
-            let temp[1] = 60 + temp[1]
-        endif
-    endif
+    let seconds1 = a:time1[0] * 60 * 60 + a:time1[1] * 60
+    let seconds2 = a:time2[0] * 60 * 60 + a:time2[1] * 60
+
+    let diff = seconds2 - seconds1
+
+    return [diff / 60 / 60, diff / 60 % 60]
+
+    "if temp[0] < 0
+    "    if temp[1] > 0
+    "        let temp[0] += 1
+    "        let temp[1] = 60 - temp[1]
+    "    elseif temp[1] == 0
+    "        let temp[0] = -(temp[0])
+    "    endif
+    "else
+    "    if temp[1] < 0
+    "        let temp[0] -= 1
+    "        let temp[1] = -(60 + temp[1])
+    "        "let temp[1] = 60 + temp[1]
+    "    endif
+    "endif
 
     return temp
 endfunction
