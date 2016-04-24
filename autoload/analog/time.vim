@@ -1,5 +1,5 @@
 " Time functions {{{
-function! analog#time#time_diff(time1, time2)
+function! analog#time#diff(time1, time2)
     " Do not waste time calculating time differences between times on
     " different days
     "if a:time1[2] != a:time2[2]
@@ -33,7 +33,7 @@ function! analog#time#time_diff(time1, time2)
     return temp
 endfunction
 
-function! analog#time#time_in_interval(time, intervals)
+function! analog#time#in_interval(time, intervals)
     let [cur_hours, cur_mins] = a:time
 
     for i in range(0, len(a:intervals) - 1, 2)
@@ -54,6 +54,6 @@ function! analog#time#time_to_close()
     let analog_times = split(analog#get_open_hours()[-1], ':')
     let current_time = split(strftime('%H:%M'), ':')
 
-    return analog#time#time_diff(analog_times, current_time)
+    return analog#time#diff(analog_times, current_time)
 endfunction
 " }}}

@@ -54,7 +54,7 @@ function! analog#get_current_staff()
     let json = analog#web#request(g:analog#web#shifts_url, '')
     let staff = analog#json#parse_json_employees(json)
     let hours = analog#json#parse_json_open_hours(json)
-    let i = analog#time#time_in_interval(split(strftime('%H:%M'), ':'), hours)
+    let i = analog#time#in_interval(split(strftime('%H:%M'), ':'), hours)
 
     return staff[i]
 endfunction
