@@ -1,18 +1,15 @@
-function! analog#time#diff(time1, time2)
+function! analog#time#diff(from, to)
     " Do not waste time calculating time differences between times on
     " different days
     "if a:time1[2] != a:time2[2]
     "    return
     "endif
 
-    let temp = [a:time1[0] - a:time2[0], a:time1[1] - a:time2[1]]
-    let seconds1 = a:time1[0] * 60 * 60 + a:time1[1] * 60
-    let seconds2 = a:time2[0] * 60 * 60 + a:time2[1] * 60
+    let seconds1 = a:from[0] * 60 * 60 + a:from[1] * 60
+    let seconds2 = a:to[0] * 60 * 60 + a:to[1] * 60
     let diff = seconds2 - seconds1
 
     return [diff / 60 / 60, diff / 60 % 60]
-
-    return temp
 endfunction
 
 function! analog#time#in_interval(time, intervals)
@@ -34,8 +31,8 @@ function! analog#time#in_interval(time, intervals)
 endfunction
 
 function! analog#time#time_to_close()
-    let analog_times = split(analog#get_open_hours()[-1], ':')
     let current_time = split(strftime('%H:%M'), ':')
+    let analog_times = split(analog#get_open_hours()[-1], ':')
 
-    return analog#time#diff(analog_times, current_time)
+    return analog#time#diff(current_time, analog_times)
 endfunction
