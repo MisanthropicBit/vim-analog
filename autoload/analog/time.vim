@@ -1,4 +1,3 @@
-" Time functions {{{
 function! analog#time#diff(time1, time2)
     " Do not waste time calculating time differences between times on
     " different days
@@ -7,28 +6,11 @@ function! analog#time#diff(time1, time2)
     "endif
 
     let temp = [a:time1[0] - a:time2[0], a:time1[1] - a:time2[1]]
-
     let seconds1 = a:time1[0] * 60 * 60 + a:time1[1] * 60
     let seconds2 = a:time2[0] * 60 * 60 + a:time2[1] * 60
-
     let diff = seconds2 - seconds1
 
     return [diff / 60 / 60, diff / 60 % 60]
-
-    "if temp[0] < 0
-    "    if temp[1] > 0
-    "        let temp[0] += 1
-    "        let temp[1] = 60 - temp[1]
-    "    elseif temp[1] == 0
-    "        let temp[0] = -(temp[0])
-    "    endif
-    "else
-    "    if temp[1] < 0
-    "        let temp[0] -= 1
-    "        let temp[1] = -(60 + temp[1])
-    "        "let temp[1] = 60 + temp[1]
-    "    endif
-    "endif
 
     return temp
 endfunction
@@ -56,4 +38,3 @@ function! analog#time#time_to_close()
 
     return analog#time#diff(analog_times, current_time)
 endfunction
-" }}}
