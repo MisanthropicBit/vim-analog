@@ -1,4 +1,3 @@
-" JSON parsing {{{
 function! analog#json#parse_json_employees(json)
     let results = analog#get_all_matches(a:json, g:analog#patterns#json_employees)
 
@@ -15,4 +14,3 @@ function! analog#json#parse_json_open_hours(json)
 
     return intervals
 endfunction
-" }}}

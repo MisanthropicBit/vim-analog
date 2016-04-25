@@ -17,19 +17,20 @@ endfunction
 
 function! analog#time#in_interval(time, intervals)
     let [cur_hours, cur_mins] = a:time
+    let seconds = cur_hours * 60 * 60 + cur_mins * 60
 
     for i in range(0, len(a:intervals) - 1, 2)
         let [min_hour, min_mins] = split(a:intervals[i], ':')
         let [max_hour, max_mins] = split(a:intervals[i + 1], ':')
+        let minseconds = min_hour * 60 * 60 + min_mins * 60
+        let maxseconds = max_hour * 60 * 60 + max_mins * 60
 
-        " TODO: Fix checks
-        if cur_hours > min_hour && cur_hours < max_hour
+        if seconds >= minseconds && seconds <= maxseconds
             return i / 2
-            "if cur_mins >= min_mins && cur_mins <= max_mins
-            "    return i
-            "endif
         endif
     endfor
+
+    return -1
 endfunction
 
 function! analog#time#time_to_close()
