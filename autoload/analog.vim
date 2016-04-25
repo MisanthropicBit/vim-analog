@@ -63,12 +63,6 @@ function! analog#get_all_matches(str, pattern)
     return results
 endfunction
 
-function! analog#print_error_message(format, args)
-   echohl WarningMsg
-   "echoerr printf(a:format, a:args*)
-   echohl NONE
-endfunction
-
 function! analog#get_current_symbol()
     return [g:analog#no_coffee_symbol, g:analog#coffee_symbol, g:analog#no_connection_symbol][analog#is_open()]
 endfunction
