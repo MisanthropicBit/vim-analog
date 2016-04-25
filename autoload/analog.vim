@@ -4,14 +4,6 @@ let g:analog#web#open_url = g:analog#web#base_url . '/open'
 let g:analog#web#shifts_url = g:analog#web#base_url . '/shifts/today'
 " }}}
 
-" Patterns {{{
-let g:analog#patterns#json_open = '\v^\{\"open\":(false|true)\}$'
-let g:analog#patterns#json_employees = '\v\"Employees\":\[\zs(.{-})\ze\]'
-let g:analog#patterns#json_open_hours = '\v\"%(Open|Close)\":\"\zs(.{-})\ze\"'
-let g:analog#patterns#json_time = '\v\d{4}-\d{2}-\d{2}T\zs\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
-let g:analog#patterns#json_full_date = '\v\zs\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
-" }}}
-
 " General {{{
 function! analog#is_open()
     let json = analog#web#request(g:analog#web#open_url, '')
@@ -20,14 +12,13 @@ function! analog#is_open()
         return -1
     endif
 
-    let state = matchlist(json, g:analog#patterns#json_open)
+    let state = analog#json#parse_open_status(json)
 
-    if len(state) > 1
-        return (state[1] ==# "true" ? 1 : 0)
+    if state == -1
+        call analog#print_error_message("vim-analog: Unknown state for open: '%s'", state)
     endif
 
-    call analog#print_error_message("vim-analog: Unknown state for open: '%s'", state)
-    return -1
+    return state
 endfunction
 
 function! analog#is_open_or_echoerr()
@@ -62,18 +53,7 @@ endfunction
 function! analog#get_open_hours()
     let json = analog#web#request(g:analog#web#shifts_url, '')
 
-    if has("python")
-        " TODO!
-    endif
-
-    let hours = analog#get_all_matches(json, g:analog#patterns#json_open_hours)
-    let intervals = []
-
-    for h in hours
-        call add(intervals, matchstr(h, g:analog#patterns#json_time))
-    endfor
-
-    return intervals
+    return analog#json#parse_json_open_hours(json)
 endfunction
 
 function! analog#get_all_matches(str, pattern)
