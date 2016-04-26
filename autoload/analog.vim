@@ -119,7 +119,11 @@ function! analog#echo_time_to_close()
     if analog#is_open_or_echoerr() > 0
         let diff = analog#time#time_to_close()
 
-        echo printf("Analog closes in %s hour(s) and %s minute(s)", diff[0], diff[1])
+        if diff[0] < 0 || diff[1] < 0
+            echo printf("Analog closed %s hour(s) and %s minute(s) ago", diff[0], diff[1])
+        else
+            echo printf("Analog closes in %s hour(s) and %s minute(s)", diff[0], diff[1])
+        endif
     endif
 endfunction
 " }}}
