@@ -24,13 +24,15 @@ endfunction
 function! analog#is_open_or_echoerr()
     let state = analog#is_open()
 
-    echohl WarningMsg
     if state == 0
-        echo "Analog is closed"
+        if g:analog#ignore_closed
+            return 1
+        endif
+
+        call s:warn("Analog is closed")
     elseif state == -1
-        echo "No connection"
+        call s:warn("No connection")
     endif
-    echohl NONE
 
     return state
 endfunction
@@ -65,6 +67,12 @@ endfunction
 
 function! analog#get_current_symbol()
     return [g:analog#no_coffee_symbol, g:analog#coffee_symbol, g:analog#no_connection_symbol][analog#is_open()]
+endfunction
+
+function! s:warn(msg)
+    echohl WarningMsg
+    echo a:msg
+    echohl NONE
 endfunction
 " }}}
 
