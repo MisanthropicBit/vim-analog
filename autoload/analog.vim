@@ -49,7 +49,7 @@ function! analog#get_current_staff()
     let hours = analog#json#parse_json_open_hours(json)
     let i = analog#time#in_interval(split(strftime('%H:%M'), ':'), hours)
 
-    return staff[i]
+    return (i == -1 ? [] : staff[i])
 endfunction
 
 function! analog#get_open_hours()
@@ -101,7 +101,11 @@ function! analog#echo_current_staff()
     if analog#is_open_or_echoerr() > 0
         let staff = analog#get_current_staff()
 
-        echo join(staff, ', ')
+        if empty(staff)
+            call s:warn("No staff, Analog is closed")
+        else
+            echo join(staff, ', ')
+        endif
     endif
 endfunction
 
