@@ -4,6 +4,7 @@ tags
 logos.txt
 git_headline.txt
 *.sh
+*.py
 *.pyc
 *.tasks
 *.lock
