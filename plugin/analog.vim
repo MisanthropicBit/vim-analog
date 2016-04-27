@@ -29,7 +29,7 @@ endif
 " }}}
 
 " Commands {{{
-command! AnalogVersion echo "vim-analog v" . g:analog#version
+command! AnalogVersion echo "vim-analog v" . analog#version()
 command! AnalogOpen call analog#echo_open_status()
 command! AnalogHours call analog#echo_open_hours()
 command! AnalogStaff call analog#echo_staff()

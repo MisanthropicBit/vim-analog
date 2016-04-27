@@ -5,6 +5,10 @@ let g:analog#web#shifts_url = g:analog#web#base_url . '/shifts/today'
 " }}}
 
 " General {{{
+function! analog#version()
+    return g:analog#version
+endfunction
+
 function! analog#is_open()
     let json = analog#web#request(g:analog#web#open_url, '')
 
