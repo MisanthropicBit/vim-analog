@@ -1,6 +1,8 @@
 vim-analog v0.1.0 :coffee:
 ==========================
 
+[![Build status](https://travis-ci.org/MisanthropicBit/vim-analog.svg?branch=master)](https://travis-ci.org/MisanthropicBit/vim-analog)
+
 ![Example of using vim-analog](https://github.com/MisanthropicBit/vim-analog/demos/demo.gif)
 
 A plugin for getting information about the open hours and staff of the Analog café at the IT
