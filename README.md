@@ -3,14 +3,14 @@ vim-analog v0.1.0 :coffee:
 
 [![Build status](https://travis-ci.org/MisanthropicBit/vim-analog.svg?branch=master)](https://travis-ci.org/MisanthropicBit/vim-analog)
 
-![Example of using vim-analog](https://github.com/MisanthropicBit/vim-analog/demos/demo.gif)
+<!--![Example of using vim-analog](https://github.com/MisanthropicBit/vim-analog/demos/demo.gif)-->
 
 A plugin for getting information about the open hours and staff of the Analog café at the IT
 University of Copenhagen from within vim.
 
-[Contributions are always welcome](https://github.com/MisanthropicBit/vim-analog/CONTRIBUTING.md)!
+<!--[Contributions are always welcome](https://github.com/MisanthropicBit/vim-analog/CONTRIBUTING.md)!-->
 
-See the list suggested of [future improvements](https://github.com/MisanthropicBit/vim-analog/FUTURE.md).
+See the list of suggested [future improvements](https://github.com/MisanthropicBit/vim-analog/FUTURE.md).
 
 Installation
 ------------
@@ -19,12 +19,12 @@ You can install `vim-analog` using Pathogen:
 
 ```
 cd ~/.vim/bundle
-git clone https://github.com/MisanthropicBit/vim-task
+git clone https://github.com/MisanthropicBit/vim-analog
 ```
 
 Alternatively, you can use Vundle by adding the following to your .vimrc:
 
-    Plugin 'MisanthropicBit/vim-task'
+    Plugin 'MisanthropicBit/vim-analog'
 
 Or any other plugin manager you might prefer.
 
