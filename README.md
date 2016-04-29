@@ -15,18 +15,16 @@ See the list of suggested [future improvements](https://github.com/MisanthropicB
 Installation
 ------------
 
-You can install `vim-analog` using Pathogen:
+`vim-analog` is `pathogen`-compatible and can be installed with various plugin managers:
 
-```
-cd ~/.vim/bundle
-git clone https://github.com/MisanthropicBit/vim-analog
-```
-
-Alternatively, you can use Vundle by adding the following to your .vimrc:
-
-    Plugin 'MisanthropicBit/vim-analog'
-
-Or any other plugin manager you might prefer.
+* [Pathogen](https://github.com/tpope/vim-pathogen):\
+  `git clone https://github.com/MisanthropicBit/vim-analog ~/.vim/bundle/vim-analog`
+* [NeoBundle](https://github.com/Shougo/neobundle.vim):\
+  `NeoBundle 'MisanthropicBit/vim-analog'`
+* [VAM](https://github.com/MarcWeber/vim-addon-manager):\
+  `call vam#ActivateAddons(['MisanthropicBit/vim-analog'])`
+* [Vundle](https://github.com/VundleVim/Vundle.vim):\
+  `Plugin 'MisanthropicBit/vim-analog'`
 
 Unicode support
 ---------------
