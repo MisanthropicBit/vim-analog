@@ -11,6 +11,7 @@ function! s:AnalogWgetRequest(url, options)
 endfunction
 
 function! s:AnalogWebRequestMissing(url, options)
+    echoerr "vim-analog: Either curl or wget must be installed"
     return ''
 endfunction
 
@@ -21,7 +22,6 @@ elseif executable('wget')
     let s:AnalogWebRequest = function("s:AnalogWgetRequest")
 else
     let s:AnalogWebRequest = function("s:AnalogWebRequestMissing")
-    echoerr "vim-analog: Either curl, wget or python must be installed"
 endif
 
 function! analog#web#request(url, options)
