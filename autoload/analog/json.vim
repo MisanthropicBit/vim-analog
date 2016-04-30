@@ -14,7 +14,11 @@ endif
 
 function! analog#json#parse_open_status(json)
     if s:has_json_decode
-        let result = json_decode(a:json)
+        try
+            let result = json_decode(a:json)
+        catch
+            return -1
+        endtry
 
         if has_key(result, 'open')
             if result.open == v:true || result.open == v:false
@@ -34,7 +38,12 @@ endfunction
 
 function! analog#json#parse_json_employees(json)
     if s:has_json_decode
-        let result = json_decode(a:json)
+        try
+            let result = json_decode(a:json)
+        catch
+            return -1
+        endtry
+
         let employees = []
 
         for r in result
@@ -58,7 +67,11 @@ function! analog#json#parse_json_open_hours(json)
     let intervals = []
 
     if s:has_json_decode
-        let result = json_decode(a:json)
+        try
+            let result = json_decode(a:json)
+        catch
+            return -1
+        endtry
 
         for r in result
             if has_key(r, 'Open') && has_key(r, 'Close')

@@ -16,13 +16,7 @@ function! analog#is_open()
         return -1
     endif
 
-    let state = analog#json#parse_open_status(json)
-
-    if state == -1
-        call analog#print_error_message("vim-analog: Unknown state for open: '%s'", state)
-    endif
-
-    return state
+    return analog#json#parse_open_status(json)
 endfunction
 
 function! analog#is_open_or_echoerr()
@@ -35,7 +29,7 @@ function! analog#is_open_or_echoerr()
 
         call s:warn("Analog is closed")
     elseif state == -1
-        call s:warn("No connection")
+        call s:warn("No connection, or service is unavailable")
     endif
 
     return state
