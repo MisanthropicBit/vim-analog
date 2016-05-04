@@ -11,13 +11,12 @@ if !s:has_json_decode
     " }}}
 endif
 
-
 function! analog#json#parse_open_status(json)
     if s:has_json_decode
         try
             let result = json_decode(a:json)
         catch
-            return -1
+            return -2
         endtry
 
         if has_key(result, 'open')
