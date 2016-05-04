@@ -3,10 +3,10 @@ let s:pattern_json_time = '\v\d{4}-\d{2}-\d{2}T\zs\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{
 
 if !s:has_json_decode
     " Patterns {{{
-    let s:pattern_json_open = '\v^\{\"open\":(false|true)\}$'
-    let s:pattern_json_open = '\v^\{\"open\":(false|true)\}$'
-    let s:pattern_json_employees = '\v\"Employees\":\[\zs(.{-})\ze\]'
-    let s:pattern_json_open_hours = '\v\"%(Open|Close)\":\"\zs(.{-})\ze\"'
+    let s:pattern_json_open = '\v^\{\"open\":\s*(false|true)\}$'
+    let s:pattern_json_open = '\v^\{\"open\":\s*(false|true)\}$'
+    let s:pattern_json_employees = '\v\"Employees\":\s*\[\zs(.{-})\ze\]'
+    let s:pattern_json_open_hours = '\v\"%(Open|Close)\":\s*\"\zs(.{-})\ze\"'
     let s:pattern_json_full_date = '\v\zs\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
     " }}}
 endif
@@ -16,7 +16,7 @@ function! analog#json#parse_open_status(json)
         try
             let result = json_decode(a:json)
         catch
-            return -2
+            return -1
         endtry
 
         if has_key(result, 'open')
@@ -25,7 +25,7 @@ function! analog#json#parse_open_status(json)
             endif
         endif
 
-        return -3
+        return -1
     else
         let result = matchlist(a:json, s:pattern_json_open)
 
@@ -33,7 +33,7 @@ function! analog#json#parse_open_status(json)
             return (result[1] ==# "true" ? 1 : 0)
         endif
 
-        return -4
+        return -1
     endif
 
     return result
