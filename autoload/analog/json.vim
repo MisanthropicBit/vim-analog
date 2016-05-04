@@ -32,7 +32,7 @@ function! analog#json#parse_open_status(json)
         endif
     endif
 
-    return -1
+    return result
 endfunction
 
 function! analog#json#parse_json_employees(json)
