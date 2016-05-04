@@ -24,12 +24,16 @@ function! analog#json#parse_open_status(json)
                 return (result.open ==# v:true ? 1 : 0)
             endif
         endif
+
+        return -3
     else
         let result = matchlist(a:json, s:pattern_json_open)
 
         if len(result) > 1
             return (result[1] ==# "true" ? 1 : 0)
         endif
+
+        return -4
     endif
 
     return result
