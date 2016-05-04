@@ -17,13 +17,13 @@ Installation
 
 `vim-analog` is `pathogen`-compatible and can be installed with various plugin managers:
 
-* [Pathogen](https://github.com/tpope/vim-pathogen):\
+* [Pathogen](https://github.com/tpope/vim-pathogen):
   `git clone https://github.com/MisanthropicBit/vim-analog ~/.vim/bundle/vim-analog`
-* [NeoBundle](https://github.com/Shougo/neobundle.vim):\
+* [NeoBundle](https://github.com/Shougo/neobundle.vim):
   `NeoBundle 'MisanthropicBit/vim-analog'`
-* [VAM](https://github.com/MarcWeber/vim-addon-manager):\
+* [VAM](https://github.com/MarcWeber/vim-addon-manager):
   `call vam#ActivateAddons(['MisanthropicBit/vim-analog'])`
-* [Vundle](https://github.com/VundleVim/Vundle.vim):\
+* [Vundle](https://github.com/VundleVim/Vundle.vim):
   `Plugin 'MisanthropicBit/vim-analog'`
 
 Unicode support
