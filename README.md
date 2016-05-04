@@ -1,13 +1,13 @@
 # vim-analog v0.1.0 [![Build status](https://travis-ci.org/MisanthropicBit/vim-analog.svg?branch=master)](https://travis-ci.org/MisanthropicBit/vim-analog)
 
-![Example of using vim-analog](/demo.gif?raw=true)
-
 A plugin for getting information about the open hours and staff of the Analog café at the IT
 University of Copenhagen from within vim.
 
-<!--[Contributions are always welcome](https://github.com/MisanthropicBit/vim-analog/CONTRIBUTING.md)!-->
+See the list of suggested [future improvements](/FUTURE.md).
 
-See the list of suggested [future improvements](https://github.com/MisanthropicBit/vim-analog/FUTURE.md).
+![Example of using vim-analog](/demo.gif?raw=true)
+
+<!--[Contributions are always welcome](https://github.com/MisanthropicBit/vim-analog/CONTRIBUTING.md)!-->
 
 ## Installation
 
