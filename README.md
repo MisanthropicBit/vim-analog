@@ -1,4 +1,4 @@
-# vim-analog v0.1.0 [![Build status](https://travis-ci.org/MisanthropicBit/vim-analog.svg?branch=master)](https://travis-ci.org/MisanthropicBit/vim-analog)
+# vim-analog v0.1.0 ![Build status](https://travis-ci.org/MisanthropicBit/vim-analog.svg?branch=master) [!License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 A plugin for getting information about the open hours and staff of the Analog café at the IT
 University of Copenhagen from within vim.
