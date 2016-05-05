@@ -27,13 +27,13 @@ See the list of suggested [future improvements](/FUTURE.md).
 To check if your terminal supports unicode, run the following (`bash` v4+):
 
 ```
-echo -e '\u2615 \u2714 \u2717'
+printf '\u2615 \u2714 \u2717\n'
 ```
 
 Otherwise, try this:
 
 ```
-echo -e '\xe2\x98\x95 \xe2\x9c\x94 \xe2\x9c\x97'
+printf '\xe2\x98\x95 \xe2\x9c\x94 \xe2\x9c\x97\n'
 ```
 
 You should see a coffee cup, a checkmark and an X: "☕ ✔ ✗"
