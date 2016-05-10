@@ -31,6 +31,12 @@ function! analog#time#in_interval(time, intervals)
 endfunction
 
 function! analog#time#time_to_close()
+    let temp = analog#get_open_hours()
+
+    if empty(temp)
+        return []
+    endif
+
     let current_time = split(strftime('%H:%M'), ':')
     let analog_times = split(analog#get_open_hours()[-1], ':')
 

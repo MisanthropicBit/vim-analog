@@ -83,6 +83,12 @@ endfunction
 function! analog#echo_staff()
     if analog#is_open_or_echoerr() > 0
         let staff = analog#get_staff()
+
+        if empty(staff)
+            call s:warn("No staff, Analog is closed")
+            return
+        endif
+
         let hours = analog#get_open_hours()
         
         for i in range(0, len(staff) - 1)
@@ -111,9 +117,13 @@ function! analog#echo_open_hours()
     if analog#is_open_or_echoerr() > 0
         let hours = analog#get_open_hours()
 
-        for i in range(0, len(hours) - 1, 2)
-            echo printf("%s - %s", hours[i], hours[i + 1])
-        endfor
+        if empty(hours)
+            call s:warn("No open hours, Analog is closed")
+        else
+            for i in range(0, len(hours) - 1, 2)
+                echo printf("%s - %s", hours[i], hours[i + 1])
+            endfor
+        endif
     endif
 endfunction
 
@@ -121,10 +131,14 @@ function! analog#echo_time_to_close()
     if analog#is_open_or_echoerr() > 0
         let diff = analog#time#time_to_close()
 
-        if diff[0] < 0 || diff[1] < 0
-            echo printf("Analog closed %s hour(s) and %s minute(s) ago", diff[0], diff[1])
+        if empty(diff)
+            call s:warn("Analog is closed")
         else
-            echo printf("Analog closes in %s hour(s) and %s minute(s)", diff[0], diff[1])
+            if diff[0] < 0 || diff[1] < 0
+                echo printf("Analog closed %s hour(s) and %s minute(s) ago", diff[0], diff[1])
+            else
+                echo printf("Analog closes in %s hour(s) and %s minute(s)", diff[0], diff[1])
+            endif
         endif
     endif
 endfunction

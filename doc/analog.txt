@@ -88,8 +88,13 @@ COMMANDS                                                     *analog-commands*
 ==============================================================================
 TROUBLESHOOTING                                       *analog-troubleshooting*
 
-Q: 
-A: 
+Q: Why does the plugin report that Analog is closed even though
+   |g:analog#ignore_closed| is set to 1?
+A: Sometimes Analog is closed for the entire day due to exams etc. In this
+   case, no data is returned from the Analog API and so there is no data to
+   display. The |g:analog#ignore_closed| option is only relevant when Analog
+   is closed at the time the query, but will or has been open at some other
+   time.
 
 ==============================================================================
 CONTRIBUTIONS                                           *analog-contributions*
