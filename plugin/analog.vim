@@ -22,7 +22,7 @@ let g:analog#prefer_symbols = get(g:, 'analog#prefer_symbols', 1)
 let g:analog#ignore_closed = get(g:, 'analog#ignore_closed', 1)
 let g:analog#osx_notifications = get(g:, 'analog#osx_notifications', 0)
 
-if has('multi_byte') && g:analog#prefer_symbols != 0
+if has('multi_byte') && g:analog#prefer_symbols == 1
     " The unicode representation of the coffee cup symbol,
     " may differ based on your font. The codepoint is U+2615
     "
@@ -32,16 +32,24 @@ if has('multi_byte') && g:analog#prefer_symbols != 0
     let g:analog#no_coffee_symbol = '☕  ✗'
     let g:analog#no_connection_symbol = '☕  ?'
 else
+    if g:analog#prefer_symbols == 1
+        echoerr "vim-analog: Need feature 'multi_byte' for Unicode symbols"
+    endif
+
     let g:analog#coffee_symbol = 'Analog is open'
     let g:analog#no_coffee_symbol = 'Analog is closed'
     let g:analog#no_connection_symbol = 'No connection'
 endif
 
-if has('mac') || has('macunix')
-    let g:analog#notify_before_close = 300 " 5 minutes
-    let g:analog#osx_notification_sound_name = 'Hero'
+if (has('mac') || has('macunix')) && executable('osascript')
+    let g:analog#notify_before_close = get(g:, 'analog#notify_before_close', 300) " Default is 5 minutes
+    let g:analog#osx_notification_sound_name = get(g:, 'analog#osx_notification_sound_name', 'Hero')
 else
-    let g:analog#use_osx_notifications = 0
+    if g:analog#osx_notifications == 1
+        echoerr "vim-analog: Notifications are only supported on Mac/OSX"
+    endif
+
+    let g:analog#osx_notifications = 0
 endif
 " }}}
 
