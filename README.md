@@ -9,6 +9,10 @@ See the list of suggested [future improvements](/FUTURE.md).
 
 <!--[Contributions are always welcome](https://github.com/MisanthropicBit/vim-analog/CONTRIBUTING.md)!-->
 
+## Requirements
+
+`vim-analog` needs either `curl` or `wget` installed.
+
 ## Installation
 
 `vim-analog` is `pathogen`-compatible and can be installed with various plugin managers:
