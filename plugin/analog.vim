@@ -62,8 +62,10 @@ command! AnalogStaffNow call analog#echo_current_staff()
 command! AnalogTimeToClose call analog#echo_time_to_close()
 " }}}
 
-autocmd CursorHold * call analog#update()
-autocmd CursorHoldI * call analog#update()
+if g:analog#osx_notifications == 1
+    autocmd CursorHold * call analog#update()
+    autocmd CursorHoldI * call analog#update()
+endif
 
 let g:loaded_analog = 1
 
