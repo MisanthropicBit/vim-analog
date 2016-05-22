@@ -59,6 +59,18 @@ The given values are the defaults.
 * of issuing an error message. >
     g:analog#ignore_closed = 1
 <
+* If enabled, use Mac/OSX notifications to display a reminder when Analog is
+* about to close. Automatically disabled if not on a Mac system. >
+    g:analog#osx_notifications = 1
+<
+* Emit a notification when Analog closes in this many seconds. Requires
+* |g:analog#osx_notifications| to be enabled. Default is 5 minutes. >
+    g:analog#notify_before_close = 300
+<
+* The sound used when emitting a notification. Requires
+* |g:analog#osx_notifications| to be enabled.  >
+    g:analog#osx_notification_sound_name = 'Hero'
+<
 ==============================================================================
 COMMANDS                                                     *analog-commands*
 
