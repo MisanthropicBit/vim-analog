@@ -67,10 +67,6 @@ function! analog#get_current_symbol()
     return [g:analog#no_coffee_symbol, g:analog#coffee_symbol, g:analog#no_connection_symbol][analog#is_open()]
 endfunction
 
-function! AnalogDefaultStatusline()
-    return '%<%f %h%r%=' . g:analog#coffee_symbol . ' %-14.(%l,%c%V%) %P'
-endfunction
-
 function! analog#update()
     let open = analog#is_open()
 
