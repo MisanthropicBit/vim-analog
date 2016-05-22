@@ -96,7 +96,7 @@ endfunction
 function! analog#update()
     let time_to_close = analog#time#time_to_close()
 
-    if min(time_to_close) >= 0
+    if !empty(time_to_close) && min(time_to_close) >= 0
         let seconds = time_to_close[0] * 60 * 60 + time_to_close[1] * 60
 
         if seconds <= g:analog#notify_before_close

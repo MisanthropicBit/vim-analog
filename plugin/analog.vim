@@ -62,6 +62,9 @@ command! AnalogStaffNow call analog#echo_current_staff()
 command! AnalogTimeToClose call analog#echo_time_to_close()
 " }}}
 
+autocmd CursorHold * call analog#update()
+autocmd CursorHoldI * call analog#update()
+
 let g:loaded_analog = 1
 
 " }}}
