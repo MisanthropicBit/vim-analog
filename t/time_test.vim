@@ -1,7 +1,4 @@
 describe 'vim-analog'
-    before
-    end
-
     it 'should return the expected difference between two time points'
         Expect analog#time#diff([18, 26], [17, 30]) == [0, -56]
         Expect analog#time#diff([17, 30], [18, 26]) == [0, 56]
