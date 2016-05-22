@@ -67,22 +67,6 @@ function! analog#get_current_symbol()
     return [g:analog#no_coffee_symbol, g:analog#coffee_symbol, g:analog#no_connection_symbol][analog#is_open()]
 endfunction
 
-function! analog#update()
-    let open = analog#is_open()
-
-    "let time_to_close = analog#time_to_close()
-    "echom string(time_to_close)
-
-    "if min(time_to_close) >= 0
-    "    let seconds = time_to_close[0] * 60 * 60 + time_to_close[1] * 60
-    "    echom seconds
-
-    "    if seconds <= g:analog#notify_before_close
-    "        call analog#notify()
-    "    endif
-    "endif
-endfunction
-
 function! s:warn(msg)
     echohl WarningMsg
     echo a:msg
@@ -91,9 +75,14 @@ endfunction
 " }}}
 
 " Notifications {{{
+function! analog#can_use_notifications()
+    return has('mac') || has('macunix') && executable('osascript')
+endfunction
+
 function! analog#notify()
-    if has('mac') || has('macunix')
-        let script_cmd = 'osascript -e "display notification \"Analog closes in 5 minutes\" with title \"vim-analog:\"'
+    if has('mac') || has('macunix') && executable('osascript')
+        let minutes = g:analog#notify_before_close / 60
+        let script_cmd = printf('osascript -e "display notification \"Analog closes in %s minutes\" with title \"vim-analog:\"', minutes)
 
         if len(g:analog#osx_notification_sound_name) > 0
             let script_cmd .= ' sound name \"' . g:analog#osx_notification_sound_name . '\"'
@@ -102,6 +91,19 @@ function! analog#notify()
         let script_cmd .= '"'
         call system(script_cmd)
     endif
+endfunction
+
+function! analog#update()
+    let time_to_close = analog#time#time_to_close()
+
+    if min(time_to_close) >= 0
+        let seconds = time_to_close[0] * 60 * 60 + time_to_close[1] * 60
+
+        if seconds <= g:analog#notify_before_close
+            call analog#notify()
+        endif
+    endif
+endfunction
 " }}}
 
 " Echo status {{{
