@@ -1,4 +1,4 @@
-*vim-analog.txt* A small plugin that informs you about the Analog café at ITU
+*vim-analog.txt* A plugin that informs you about the Analog café at ITU
 *vim-analog*
 
                                                                    )     ~
@@ -12,126 +12,53 @@
 ==============================================================================
 CONTENTS                                                    *analog-contents*
 
-   01. Introduction ......................................... |analog-intro|
-   02. Requirements .................................. |analog-requirements|
-   03. Configuration ................................ |analog-configuration|
-   04. Statuslines .....................................|analog-statuslines|
-   05. Commands .......................................... |analog-commands|
-   06. Troubleshooting ............................ |analog-troubleshooting|
-   07. Contributions ................................ |analog-contributions|
-   08. License ............................................ |analog-license|
+   01. Introduction .......................................... |analog-intro|
+   02. Requirements ................................... |analog-requirements|
+   03. Configuration ................................. |analog-configuration|
+   04. Commands ........................................... |analog-commands|
+   05. Troubleshooting ............................. |analog-troubleshooting|
+   06. Contributions ................................. |analog-contributions|
+   07. License ............................................. |analog-license|
 
 ==============================================================================
 INTRODUCTION                                                    *analog-intro*
 
-vim-analog is a small plugin to inform you about opening hours and staff at
-the Analog café at the IT University of Copenhagen. It also provides optional
-integration with vim-airline and vim-lightline.
+vim-analog is a plugin that informs you about opening hours and staff at the
+Analog café at the IT University of Copenhagen.
 
 ==============================================================================
 REQUIREMENTS                                             *analog-requirements*
 
-To query the information of the Analog API, vim-analog needs either curl, wget
-or python installed.
-
-If more than one is available and one of them is python, then python is used,
-as it provides better error-handling, parsing and datetime manipulation.
+To query the Analog API, vim-analog needs either curl or wget installed.
 
 ==============================================================================
 CONFIGURATION                                           *analog-configuration*
 
 The given values are the defaults.
 
-* The symbol to use when Analog is open. Uses the Unicode symbols U+2615 and
-* U+2713 by default (if vim has +multi_byte). Otherwise, uses 'Analog [Open]'. >
+* The symbol signalling that Analog is open. Uses the Unicode symbols U+2615
+* and U+2713 by default (if vim has +multi_byte). Otherwise, uses
+* 'Analog is open'. >
     g:analog#coffee_symbol = '☕  ✓'
 
-* The symbol to use when Analog is closed. Uses the Unicode symbols U+2615 and
-* U+2717 by default (if vim has +multi_byte). Otherwise, uses 'Analog [Closed]'. >
+* The symbol signalling that Analog is closed. Uses the Unicode symbols U+2615
+* and U+2717 by default (if vim has +multi_byte). Otherwise, uses
+* 'Analog is closed'. >
     g:analog#no_coffee_symbol = '☕  ✗'
 
-* The symbol to use when there is no internet connection. Uses the Unicode
-* symbol U+2615 by default (if vim has +multi_byte). Otherwise, uses 'Analog [?]'. >
+* The symbol to use when there is no connection to the Analog API. Uses the
+* Unicode symbol U+2615 by default (if vim has +multi_byte). Otherwise, uses
+* 'No connection'. >
     g:analog#coffee_symbol = '☕  ?'
 
-* Prefer Unicode symbols in status bars and in commands. Automatically
-* disabled, if vim was not compiled with multi_byte. >
+* Prefer Unicode symbols in commands. Automatically disabled, if vim was not
+* compiled with multi_byte. >
     g:analog#prefer_symbols = 1
 <
-* If enabled, outputs any available information about Analog even when it is
-* closed, instead of issuing an error message. >
+* If enabled, outputs information about Analog even when it is closed, instead
+* of issuing an error message. >
     g:analog#ignore_closed = 1
 <
-* Use vim's normal statusline. Cannot be used along with other statusline
-* plugins. >
-    g:analog#use_vim_statusline = 0
-<
-* Use vim-airline's statusline. Cannot be used along with other statusline
-* plugins or vim's default statusline. >
-    g:analog#use_vim_airline = 0
-<
-* Which vim-airline section to add state symbols to. See the |vim-airline|
-* documentation for more information. >
-    g:analog#vim_airline_section = 'x'
-<
-* Use vim-lightline's statusline. Cannot be used along with other statusline
-* plugins or vim's default statusline. Note that vim-lightline is not
-* supported yet! >
-    g:analog#use_vim_lightline = 0
-
-* Receive notifications before Analog closes (Note that this feature is only
-* available on Mac OSX systems). Also see |g:analog#notify_before_close|. >
-    g:analog#use_osx_notifications = 0
-<
-* The sound that is played when an OSX notification is made (Note that this
-* feature is only available on Mac OSX systems). Check '~/Library/Sounds' and
-* '/System/Library/Sounds' for available sound names. >
-    g:analog#osx_notification_sound_name = ''
-<
-* The update interval in seconds for status bar integration. Only used when
-* either |g:analog#use_vim_airline| or |g:analog#use_vim_lightline| is
-* enabled. >
-    g:analog#update_interval = 300
-<
-==============================================================================
-STATUSLINES                                               *analog-statuslines*
-
-vim-analog currently supports integration with vim's regular statusline and
-vim-airline, with support for vim-lightline planned.
-
-* Configuring vim's regular statusline:
-  Set |g:analog#use_vim_statusline| to 1, and the statusbar is automatically
-  set up. The default vim statusline is assumed, and thus extended. If you
-  would like to customise it yourself, ...
-
-* Configuring vim-airline:
-  If |g:analog#use_vim_airline| is set to 1 in your vimrc, vim-analog provides
-  a new part called 'analog' which you can use to modify your statusline.
-  For example: >
-    let g:airline_section_x = airline#section#create_right(['analog', 'x'])
-
-<  Creates a right separator between the analog part and the airline 'x' part
-  (which is usually the filetype).
-  
-  See |airline|, |airline-parts| and |airline-sections| for more information.
-
-* Configuring vim-lightline:
-  This plugin is not supported yet.
-
-Note: `vim` provides no built-in timer support, i.e. periodically calling a
-function every 100 milliseconds. Nonetheless, `vim-analog` needs some notion
-of periodic calls to be able to support updated status bar changes.
-
-The closest thing is the |autocmd| |CursorHold|. If `vim` receives no input for
-|updatetime| milliseconds the command in the declaration of the |autocmd| is
-executed. However, many plugins rely on this functionaility and change the
-global value of |updatetime|. Therefore, to remain as conflict-free as possible,
-`vim-analog` does not change its value, but instead assumes that it has been set
-to a reasonable value.
-
-For more information, see |CursorHold|. For a more lengthy discussion on, see:
-https://news.floobits.com/2013/09/16/adding-realtime-collaboration-to-vim/
-
 ==============================================================================
 COMMANDS                                                     *analog-commands*
 
@@ -139,29 +66,35 @@ COMMANDS                                                     *analog-commands*
     Prints the current version of vim-analog.
 
 :AnalogOpen                                                    *:AnalogOpen*
-    If |g:analog#prefer_symbols| is enabled, uses the symbols
-    |g:analog#coffee_symbol| and |g:analog#no_coffee_symbol|. Otherwise uses
-    the text equivalents for the symbols.
+    If |g:analog#prefer_symbols| is enabled, uses Unicode symbols. Otherwise
+    uses the text equivalents for the symbols. See |analog-configuration|.
 
 :AnalogHours                                                  *:AnalogHours*
-    Lists the open hours for the current date.
+    Lists the open hours for the current day.
 
 :AnalogStaff                                                  *:AnalogStaff*
-    Lists the name(s) of all the staff working at Analog for the current date,
-    as well as the periods in which they will work.
+    Lists the name(s) and periods of all the staff working at Analog for
+    the current day.
 
 :AnalogStaffNow                                            *:AnalogStaffNow*
-    Lists the name(s) of the staff currently working at Analog.
+    Lists the name(s) of the staff currently working at Analog, or an
+    error message is Analog is closed (this ignores the
+    |g:analog#prefer_symbols| option).
+
+:AnalogTimeToClose                                      *:AnalogTimeToClose*
+    Echoes the hours and minutes until Analog closes, or an error message if
+    Analog is already closed for the day.
 
 ==============================================================================
 TROUBLESHOOTING                                       *analog-troubleshooting*
 
-Q: Why does the state in my statusline not always update when it should?
-A: Probably due to two reasons. Firstly, the |CursorHold| |autocmd| is just an
-   approximation of true timer behaviour in vim. Secondly, this plugin relies
-   on Café Analog's online API, and it is not unknown (as of now) if this is
-   manually (and thus prone to be imprecise) or automatically updated. Also
-   see the note under |analog-statuslines|.
+Q: Why does the plugin report that Analog is closed even though
+   |g:analog#ignore_closed| is set to 1?
+A: Sometimes Analog is closed for the entire day due to exams etc. In this
+   case, no data is returned from the Analog API and so there is no data to
+   display. The |g:analog#ignore_closed| option is only relevant when Analog
+   is closed at the time the query, but will or has been open at some other
+   time.
 
 ==============================================================================
 CONTRIBUTIONS                                           *analog-contributions*

@@ -4,15 +4,11 @@ let g:analog#web#open_url = g:analog#web#base_url . '/open'
 let g:analog#web#shifts_url = g:analog#web#base_url . '/shifts/today'
 " }}}
 
-" Patterns {{{
-let g:analog#patterns#json_open = '\v^\{\"open\":(false|true)\}$'
-let g:analog#patterns#json_employees = '\v\"Employees\":\[\zs(.{-})\ze\]'
-let g:analog#patterns#json_open_hours = '\v\"%(Open|Close)\":\"\zs(.{-})\ze\"'
-let g:analog#patterns#json_time = '\v\d{4}-\d{2}-\d{2}T\zs\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
-let g:analog#patterns#json_full_date = '\v\zs\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
-" }}}
+" General {{{
+function! analog#version()
+    return g:analog#version
+endfunction
 
-" General functions {{{
 function! analog#is_open()
     let json = analog#web#request(g:analog#web#open_url, '')
 
@@ -20,28 +16,44 @@ function! analog#is_open()
         return -1
     endif
 
-    let state = matchlist(json, g:analog#patterns#json_open)
-
-    if len(state) > 1
-        return (state[1] ==# "true" ? 1 : 0)
-    endif
-
-    call analog#print_error_message("vim-analog: Unknown state for open: '%s'", state)
-    return -1
+    return analog#json#parse_open_status(json)
 endfunction
 
 function! analog#is_open_or_echoerr()
     let state = analog#is_open()
 
-    echohl WarningMsg
     if state == 0
-        echo "Analog is closed"
+        if g:analog#ignore_closed
+            return 1
+        endif
+
+        call s:warn("Analog is closed")
     elseif state == -1
-        echo "No connection"
+        call s:warn("No connection, or service is unavailable")
     endif
-    echohl NONE
 
     return state
+endfunction
+
+function! analog#get_staff()
+    let json = analog#web#request(g:analog#web#shifts_url, '')
+
+    return analog#json#parse_json_employees(json)
+endfunction
+
+function! analog#get_current_staff()
+    let json = analog#web#request(g:analog#web#shifts_url, '')
+    let staff = analog#json#parse_json_employees(json)
+    let hours = analog#json#parse_json_open_hours(json)
+    let i = analog#time#in_interval(split(strftime('%H:%M'), ':'), hours)
+
+    return (i == -1 ? [] : staff[i])
+endfunction
+
+function! analog#get_open_hours()
+    let json = analog#web#request(g:analog#web#shifts_url, '')
+
+    return analog#json#parse_json_open_hours(json)
 endfunction
 
 function! analog#get_all_matches(str, pattern)
@@ -49,44 +61,6 @@ function! analog#get_all_matches(str, pattern)
     call substitute(a:str, a:pattern, '\=add(results, submatch(0))', 'g')
 
     return results
-endfunction
-
-function! analog#get_staff()
-    let json = analog#web#request(g:analog#web#shifts_url, '')
-
-    return analog#parse_json_employees(json)
-endfunction
-
-function! analog#get_current_staff()
-    let json = analog#web#request(g:analog#web#shifts_url, '')
-    let staff = analog#parse_json_employees(json)
-    let hours = analog#parse_json_open_hours(json)
-    let i = analog#time_in_interval(split(strftime('%H:%M'), ':'), hours)
-
-    return staff[i]
-endfunction
-
-function! analog#get_open_hours()
-    let json = analog#web#request(g:analog#web#shifts_url, '')
-
-    if has("python")
-        " TODO!
-    endif
-
-    let hours = analog#get_all_matches(json, g:analog#patterns#json_open_hours)
-    let intervals = []
-
-    for h in hours
-        call add(intervals, matchstr(h, g:analog#patterns#json_time))
-    endfor
-
-    return intervals
-endfunction
-
-function! analog#print_error_message(format, args)
-   echohl WarningMsg
-   "echoerr printf(a:format, a:args*)
-   echohl NONE
 endfunction
 
 function! analog#get_current_symbol()
@@ -112,72 +86,11 @@ function! analog#update()
     "    endif
     "endif
 endfunction
-" }}}
 
-" JSON 'parsing' {{{
-function! analog#parse_json_employees(json)
-    let results = analog#get_all_matches(a:json, g:analog#patterns#json_employees)
-
-    return map(map(results, 'substitute(v:val, "\"", "", "g")'), 'split(v:val, ",")')
-endfunction
-
-function! analog#parse_json_open_hours(json)
-    let hours = analog#get_all_matches(a:json, g:analog#patterns#json_open_hours)
-    let intervals = []
-
-    for h in hours
-        call add(intervals, matchstr(h, g:analog#patterns#json_time))
-    endfor
-
-    return intervals
-endfunction
-" }}}
-
-" Time functions {{{
-" TODO: [17, 30] - [18, 26] = [-1, 4] but should by [0, 56]
-" [17, 30] - [18, 34] = [-1, -4] 
-function! analog#time_diff(time1, time2)
-    " Do not waste time calculating time differences between times on
-    " different days
-    if time1[2] != time2[2]
-        return
-    endif
-
-    let temp = [a:time1[0] - a:time2[0], a:time1[1] - a:time2[1]]
-
-    if temp[0] > 0 && temp[1] < 0
-        let temp[0] -= 1
-        let temp[1] += 60
-    elseif temp[0] < 0 && temp[1] > 0
-        let temp[0] += 1
-        let temp[1] -= 60
-    endif
-
-    return temp
-endfunction
-
-function! analog#time_in_interval(time, intervals)
-    let [cur_hours, cur_mins] = a:time
-
-    for i in range(0, len(a:intervals) - 1, 2)
-        let [min_hour, min_mins] = split(a:intervals[i], ':')
-        let [max_hour, max_mins] = split(a:intervals[i + 1], ':')
-
-        " TODO: Fix checks
-        if cur_hours > min_hour && cur_hours < max_hour
-            return i / 2
-            "if cur_mins >= min_mins && cur_mins <= max_mins
-            "    return i
-            "endif
-        endif
-    endfor
-endfunction
-
-function! analog#time_to_close()
-    let analog_times = split(analog#get_open_hours()[-1], ':')
-    let current_time = split(strftime('%H:%M'), ':')
-
-    return analog#time_diff(analog_times, current_time)
+function! s:warn(msg)
+    echohl WarningMsg
+    echo a:msg
+    echohl NONE
 endfunction
 " }}}
 
@@ -193,22 +106,23 @@ function! analog#notify()
         let script_cmd .= '"'
         call system(script_cmd)
     endif
-endfunction
 " }}}
 
 " Echo status {{{
 " Yes: DiffAdd, No: WarningMsg
 function! analog#echo_open_status()
-    let state = analog#is_open_or_echoerr()
-
-    if state != -1
-        echo (state == 1 ? g:analog#coffee_symbol : g:analog#no_coffee_symbol)
-    endif
+    echo analog#get_current_symbol()
 endfunction
 
 function! analog#echo_staff()
     if analog#is_open_or_echoerr() > 0
         let staff = analog#get_staff()
+
+        if empty(staff)
+            call s:warn("No staff, Analog is closed")
+            return
+        endif
+
         let hours = analog#get_open_hours()
         
         for i in range(0, len(staff) - 1)
@@ -225,7 +139,11 @@ function! analog#echo_current_staff()
     if analog#is_open_or_echoerr() > 0
         let staff = analog#get_current_staff()
 
-        echo join(staff, ', ')
+        if empty(staff)
+            call s:warn("No staff, Analog is closed")
+        else
+            echo join(staff, ', ')
+        endif
     endif
 endfunction
 
@@ -233,9 +151,31 @@ function! analog#echo_open_hours()
     if analog#is_open_or_echoerr() > 0
         let hours = analog#get_open_hours()
 
-        for i in range(0, len(hours) - 1, 2)
-            echo printf("%s - %s", hours[i], hours[i + 1])
-        endfor
+        if empty(hours)
+            call s:warn("No open hours, Analog is closed")
+        else
+            for i in range(0, len(hours) - 1, 2)
+                echo printf("%s - %s", hours[i], hours[i + 1])
+            endfor
+        endif
+    endif
+endfunction
+
+function! analog#echo_time_to_close()
+    if analog#is_open_or_echoerr() > 0
+        let diff = analog#time#time_to_close()
+
+        if empty(diff)
+            call s:warn("Analog is closed")
+        else
+            if diff[0] < 0 || diff[1] < 0
+                echo printf("Analog closed %s hour(s) and %s minute(s) ago", diff[0], diff[1])
+            else
+                echo printf("Analog closes in %s hour(s) and %s minute(s)", diff[0], diff[1])
+            endif
+        endif
     endif
 endfunction
 " }}}
+
+" vim: foldmethod=marker
