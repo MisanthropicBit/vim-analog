@@ -28,7 +28,7 @@ See the list of suggested [future improvements](/FUTURE.md).
 
 ## Unicode support
 
-To check if your terminal supports unicode, run the following (`bash` v4+):
+To check if your terminal supports unicode, run the following (`bash` v4.0+):
 
 ```
 printf '\u2615 \u2714 \u2717\n'
