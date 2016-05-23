@@ -1,3 +1,11 @@
+function! analog#time#time_to_seconds(time)
+    if len(a:time) == 2
+        return a:time[0] * 60 * 60 + a:time[1] * 60
+    endif
+
+    echoerr printf("vim-analog: Cannot convert invalid time '%s' to seconds", string(a:time))
+endfunction
+
 function! analog#time#diff(from, to)
     " Do not waste time calculating time differences between times on
     " different days
@@ -5,22 +13,19 @@ function! analog#time#diff(from, to)
     "    return
     "endif
 
-    let seconds1 = a:from[0] * 60 * 60 + a:from[1] * 60
-    let seconds2 = a:to[0] * 60 * 60 + a:to[1] * 60
+    let seconds1 = analog#time#time_to_seconds(a:from)
+    let seconds2 = analog#time#time_to_seconds(a:to)
     let diff = seconds2 - seconds1
 
     return [diff / 60 / 60, diff / 60 % 60]
 endfunction
 
 function! analog#time#in_interval(time, intervals)
-    let [cur_hours, cur_mins] = a:time
-    let seconds = cur_hours * 60 * 60 + cur_mins * 60
+    let seconds = analog#time#time_to_seconds(a:time)
 
     for i in range(0, len(a:intervals) - 1, 2)
-        let [min_hour, min_mins] = split(a:intervals[i], ':')
-        let [max_hour, max_mins] = split(a:intervals[i + 1], ':')
-        let minseconds = min_hour * 60 * 60 + min_mins * 60
-        let maxseconds = max_hour * 60 * 60 + max_mins * 60
+        let minseconds = analog#time#time_to_seconds(split(a:intervals[i], ':'))
+        let maxseconds = analog#time#time_to_seconds(split(a:intervals[i + 1], ':'))
 
         if seconds >= minseconds && seconds <= maxseconds
             return i / 2
