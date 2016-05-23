@@ -2,17 +2,9 @@ if exists('g:loaded_analog') || &cp || v:version < 700
     finish
 endif
 
-" Initialisation function {{{
-function! s:VimAnalogInit()
-    if g:analog#prefer_symbols && !has("multi_byte")
-        let g:analog#prefer_symbols = 0
-    endif
-
-    if g:analog#use_osx_notifications && (!has("mac") || has("macunix"))
-        let g:analog#use_osx_notifications = 0
-    endif
+function! analog#can_use_notifications()
+    return (has('mac') || has('macunix') || has('osx')) && executable('osascript')
 endfunction
-" }}}
 
 " Configuration variables {{{
 " General {{{
@@ -41,7 +33,7 @@ else
     let g:analog#no_connection_symbol = 'No connection'
 endif
 
-if (has('mac') || has('macunix')) && executable('osascript')
+if analog#can_use_notifications()
     let g:analog#notify_before_close = get(g:, 'analog#notify_before_close', 300) " Default is 5 minutes
     let g:analog#osx_notification_sound_name = get(g:, 'analog#osx_notification_sound_name', 'Hero')
 else

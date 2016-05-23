@@ -75,12 +75,8 @@ endfunction
 " }}}
 
 " Notifications {{{
-function! analog#can_use_notifications()
-    return has('mac') || has('macunix') && executable('osascript')
-endfunction
-
 function! analog#notify()
-    if has('mac') || has('macunix') && executable('osascript')
+    if analog#can_use_notifications()
         let minutes = g:analog#notify_before_close / 60
         let script_cmd = printf('osascript -e "display notification \"Analog closes in %s minutes\" with title \"vim-analog:\"', minutes)
 
