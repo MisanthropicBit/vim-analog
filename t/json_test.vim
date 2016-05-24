@@ -31,8 +31,10 @@ describe 'vim-analog'
         Expect analog#json#parse_json_employees('{"a": 1}') == []
         Expect analog#json#parse_json_employees('}{') == []
 
-        let expected_error_msg = '^Vim(echoerr):vim-analog: Failed to parse json for employees'
-        Expect expr { analog#json#parse_json_employees(g:analog#test#shifts3)} } to_throw expected_error_msg
+        if v:version > 703
+            let expected_error_msg = '^Vim(echoerr):vim-analog: Failed to parse json for employees'
+            Expect expr { analog#json#parse_json_employees(g:analog#test#shifts3)} } to_throw expected_error_msg
+        endif
     end
 
     it 'should parse the open hours without error and yield the correct results'
@@ -42,7 +44,9 @@ describe 'vim-analog'
         Expect analog#json#parse_json_open_hours('{"a": 1}') == []
         Expect analog#json#parse_json_open_hours('}{') == []
 
-        let expected_error_msg =  '^Vim(echoerr):vim-analog: Failed to parse json for open hours'
-        Expect expr { analog#json#parse_json_open_hours(g:analog#test#shifts3) } to_throw expected_error_msg
+        if v:version > 703
+            let expected_error_msg =  '^Vim(echoerr):vim-analog: Failed to parse json for open hours'
+            Expect expr { analog#json#parse_json_open_hours(g:analog#test#shifts3) } to_throw expected_error_msg
+        endif
     end
 end
