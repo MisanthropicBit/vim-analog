@@ -44,14 +44,14 @@ function! analog#json#parse_json_employees(json)
         try
             let result = json_decode(a:json)
         catch
-            return -1
+            return []
         endtry
 
         let employees = []
 
         if type(result) == 3
             for r in result
-                if type(r) == 4 &&  has_key(r, 'Employees')
+                if type(r) == 4 && has_key(r, 'Employees')
                     call add(employees, r.Employees)
                 else
                     echoerr "vim-analog: Failed to parse json for employees"
