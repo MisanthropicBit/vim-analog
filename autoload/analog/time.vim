@@ -6,18 +6,16 @@ function! analog#time#time_to_seconds(time)
     echoerr printf("vim-analog: Cannot convert invalid time '%s' to seconds", string(a:time))
 endfunction
 
-function! analog#time#diff(from, to)
-    " Do not waste time calculating time differences between times on
-    " different days
-    "if a:time1[2] != a:time2[2]
-    "    return
-    "endif
+function! analog#time#seconds_to_time(seconds)
+    return [a:seconds / 60 / 60, a:seconds / 60 % 60]
+endfunction
 
+function! analog#time#diff(from, to)
     let seconds1 = analog#time#time_to_seconds(a:from)
     let seconds2 = analog#time#time_to_seconds(a:to)
     let diff = seconds2 - seconds1
 
-    return [diff / 60 / 60, diff / 60 % 60]
+    return analog#time#seconds_to_time(diff)
 endfunction
 
 function! analog#time#in_interval(time, intervals)
