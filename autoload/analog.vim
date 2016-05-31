@@ -90,13 +90,15 @@ function! analog#notify()
 endfunction
 
 function! analog#update()
-    let time_to_close = analog#time#time_to_close()
+    if analog#can_use_notifications()
+        let time_to_close = analog#time#time_to_close()
 
-    if !empty(time_to_close) && min(time_to_close) >= 0
-        let seconds = time_to_close[0] * 60 * 60 + time_to_close[1] * 60
+        if !empty(time_to_close) && min(time_to_close) >= 0
+            let seconds = time_to_close[0] * 60 * 60 + time_to_close[1] * 60
 
-        if seconds <= g:analog#notify_before_close
-            call analog#notify()
+            if seconds <= g:analog#notify_before_close
+                call analog#notify()
+            endif
         endif
     endif
 endfunction
