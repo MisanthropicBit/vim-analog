@@ -108,6 +108,14 @@ A: Sometimes Analog is closed for the entire day due to exams etc. In this
    is closed at the time the query, but will or has been open at some other
    time.
 
+Q: Why does the OSX notification not trigger in a timely manner or at all?
+A: Unfortunately, vim does not natively support asynchronous jobs or timers.
+   Instead, the CursorHold and CursorHoldI autocmds are used to trigger an
+   update that may issue the notification. This functionality relies on the
+   |updatetime| variable (given in milliseconds). If this is set too high, for
+   example 4000, the autocmds will only trigger after 4 seconds, so the
+   suggested fix is to lower the |updatetime|.
+
 ==============================================================================
 CONTRIBUTIONS                                           *analog-contributions*
 
