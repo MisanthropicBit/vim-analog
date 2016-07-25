@@ -64,6 +64,10 @@ function! analog#json#parse_json_employees(json)
     else
         let results = analog#get_all_matches(a:json, s:pattern_json_employees)
 
+        if empty(results)
+            echoerr "vim-analog: Failed to parse json for employees"
+        endif
+
         return map(map(results, 'substitute(v:val, "\"", "", "g")'), 'split(v:val, ",")')
     endif
 endfunction
