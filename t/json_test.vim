@@ -1,4 +1,4 @@
-describe 'vim-analog'
+describe 'json parsing'
     before
         let g:analog#test#shifts1 = '[{"Open":"2016-04-27T09:00:00+02:00","Close":"2016-04-27T11:30:00+02:00","Employees":["A","B"]},' .
             \ '{"Open":"2016-04-27T14:30:00+02:00","Close":"2016-04-27T17:30:00+02:00","Employees":["C","D","E"]}]'
@@ -24,29 +24,29 @@ describe 'vim-analog'
         Expect analog#json#parse_open_status('}{') == -1
     end
 
-    it 'should parse the employees without error and yield the correct results'
+    it 'should parse the employees and yield the correct results for well-formatted json'
         Expect analog#json#parse_json_employees(g:analog#test#shifts1) == [['A', 'B'], ['C', 'D', 'E']]
         Expect analog#json#parse_json_employees(g:analog#test#shifts2) == [[], []]
-        Expect analog#json#parse_json_employees('') == []
-        Expect analog#json#parse_json_employees('{"a": 1}') == []
-        Expect analog#json#parse_json_employees('}{') == []
-
-        "if exists('*json_decode')
-        let expected_error_msg = '^Vim(echoerr):vim-analog: Failed to parse json for employees'
-        Expect expr { analog#json#parse_json_employees(g:analog#test#shifts3)} } to_throw expected_error_msg
-        "endif
     end
 
-    it 'should parse the open hours without error and yield the correct results'
+    it 'should throw an error for ill-formatted json or json where the employees are missing'
+        let expected_error_msg = '^Vim(echoerr):vim-analog: Failed to parse json for employees'
+        Expect expr { analog#json#parse_json_employees('') }                    to_throw expected_error_msg
+        Expect expr { analog#json#parse_json_employees('}{') }                  to_throw expected_error_msg
+        Expect expr { analog#json#parse_json_employees('{"a": 1}') }            to_throw expected_error_msg
+        Expect expr { analog#json#parse_json_employees(g:analog#test#shifts3) } to_throw expected_error_msg
+    end
+
+    it 'should parse the open hours and yield the correct results'
         Expect analog#json#parse_json_open_hours(g:analog#test#shifts1) == ['09:00', '11:30', '14:30', '17:30']
         Expect analog#json#parse_json_open_hours(g:analog#test#shifts2) == ['09:30', '11:30', '11:30', '17:00']
         Expect analog#json#parse_json_open_hours('') == []
         Expect analog#json#parse_json_open_hours('{"a": 1}') == []
         Expect analog#json#parse_json_open_hours('}{') == []
+    end
 
-        if exists('*json_decode')
-            let expected_error_msg =  '^Vim(echoerr):vim-analog: Failed to parse json for open hours'
-            Expect expr { analog#json#parse_json_open_hours(g:analog#test#shifts3) } to_throw expected_error_msg
-        endif
+    it 'should throw an error for ill-formatted json or json where the open hours are incomplete'
+        let expected_error_msg = '^Vim(echoerr):vim-analog: Failed to parse json for open hours'
+        Expect expr { analog#json#parse_json_open_hours(g:analog#test#shifts3) } to_throw expected_error_msg
     end
 end

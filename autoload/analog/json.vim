@@ -2,13 +2,11 @@ let s:has_json_decode = exists('*json_decode')
 let s:pattern_json_time = '\v\d{4}-\d{2}-\d{2}T\zs\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
 
 if !s:has_json_decode
-    " Patterns {{{
     let s:pattern_json_open = '\v^\{\"open\":\s*(false|true)\}$'
     let s:pattern_json_open = '\v^\{\"open\":\s*(false|true)\}$'
     let s:pattern_json_employees = '\v\"Employees\":\s*\[\zs(.{-})\ze\]'
     let s:pattern_json_open_hours = '\v\"%(Open|Close)\":\s*\"\zs(.{-})\ze\"'
     let s:pattern_json_full_date = '\v\zs\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
-    " }}}
 endif
 
 function! analog#json#parse_open_status(json)
@@ -40,35 +38,44 @@ function! analog#json#parse_open_status(json)
 endfunction
 
 function! analog#json#parse_json_employees(json)
+    let error_msg = "vim-analog: Failed to parse json for employees"
+    let employees = []
+
     if s:has_json_decode
         try
             let result = json_decode(a:json)
         catch
+            echoerr error_msg
             return []
         endtry
-
-        let employees = []
 
         if type(result) == 3
             for r in result
                 if type(r) == 4 && has_key(r, 'Employees')
                     call add(employees, r.Employees)
-                else
-                    echoerr "vim-analog: Failed to parse json for employees"
-                    return []
                 endif
             endfor
         endif
 
-        return employees
-    else
-        let results = analog#get_all_matches(a:json, s:pattern_json_employees)
-
-        if empty(results)
-            echoerr "vim-analog: Failed to parse json for employees"
+        if empty(employees)
+            echoerr error_msg
         endif
 
-        return map(map(results, 'substitute(v:val, "\"", "", "g")'), 'split(v:val, ",")')
+        return employees
+    else
+        if empty(a:json)
+            echoerr error_msg
+            return []
+        endif
+
+        let employees = analog#get_all_matches(a:json, s:pattern_json_employees)
+
+        if empty(employees)
+            echoerr error_msg
+            return []
+        endif
+
+        return map(map(employees, 'substitute(v:val, "\"", "", "g")'), 'split(v:val, ",")')
     endif
 endfunction
 
@@ -99,6 +106,11 @@ function! analog#json#parse_json_open_hours(json)
         for h in hours
             call add(intervals, matchstr(h, s:pattern_json_time))
         endfor
+
+        " The intervals must be a pair of opening and closing times
+        if len(intervals) % 2 != 0
+            echoerr "vim-analog: Failed to parse json for open hours"
+        endif
     endif
 
     return intervals
