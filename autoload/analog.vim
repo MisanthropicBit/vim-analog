@@ -1,5 +1,5 @@
 " Web URLs {{{
-let g:analog#web#base_url = 'www.cafeanalog.dk/api'
+let g:analog#web#base_url = 'https://analogio.dk/tamigo/api'
 let g:analog#web#open_url = g:analog#web#base_url . '/open'
 let g:analog#web#shifts_url = g:analog#web#base_url . '/shifts/today'
 " }}}
