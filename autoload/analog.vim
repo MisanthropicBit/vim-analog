@@ -27,9 +27,9 @@ function! analog#is_open_or_echoerr()
             return 1
         endif
 
-        call s:warn("Analog is closed")
+        call analog#warn("Analog is closed")
     elseif state == -1
-        call s:warn("No connection, or service is unavailable")
+        call analog#warn("No connection, or service is unavailable")
     endif
 
     return state
@@ -67,9 +67,9 @@ function! analog#get_current_symbol()
     return [g:analog#no_coffee_symbol, g:analog#coffee_symbol, g:analog#no_connection_symbol][analog#is_open()]
 endfunction
 
-function! s:warn(msg)
+function! analog#warn(msg)
     echohl WarningMsg
-    echo a:msg
+    echo "vim-analog: " . a:msg
     echohl NONE
 endfunction
 " }}}
@@ -85,7 +85,7 @@ function! analog#echo_staff()
         let staff = analog#get_staff()
 
         if empty(staff)
-            call s:warn("No staff, Analog is closed")
+            call analog#warn("No staff, Analog is closed")
             return
         endif
 
@@ -106,7 +106,7 @@ function! analog#echo_current_staff()
         let staff = analog#get_current_staff()
 
         if empty(staff)
-            call s:warn("No staff, Analog is closed")
+            call analog#warn("No staff, Analog is closed")
         else
             echo join(staff, ', ')
         endif
@@ -118,7 +118,7 @@ function! analog#echo_open_hours()
         let hours = analog#get_open_hours()
 
         if empty(hours)
-            call s:warn("No open hours, Analog is closed")
+            call analog#warn("No open hours, Analog is closed")
         else
             for i in range(0, len(hours) - 1, 2)
                 echo printf("%s - %s", hours[i], hours[i + 1])
@@ -132,7 +132,7 @@ function! analog#echo_time_to_close()
         let diff = analog#time#time_to_close()
 
         if empty(diff)
-            call s:warn("Analog is closed")
+            call analog#warn("Analog is closed")
         else
             if diff[0] < 0 || diff[1] < 0
                 echo printf("Analog closed %s hour(s) and %s minute(s) ago", diff[0], diff[1])
