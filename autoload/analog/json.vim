@@ -64,6 +64,10 @@ function! analog#json#parse_json_employees(json)
 
         return employees
     else
+        if empty(a:json)
+            echoerr error_msg
+        endif
+
         let employees = analog#get_all_matches(a:json, s:pattern_json_employees)
 
         return map(map(employees, 'substitute(v:val, "\"", "", "g")'), 'split(v:val, ",")')
