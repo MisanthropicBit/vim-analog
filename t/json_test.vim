@@ -27,7 +27,6 @@ describe 'json parsing'
     it 'should parse the employees and yield the correct results for well-formatted json'
         Expect analog#json#parse_json_employees(g:analog#test#shifts1) == [['A', 'B'], ['C', 'D', 'E']]
         Expect analog#json#parse_json_employees(g:analog#test#shifts2) == [[], []]
-        Expect analog#json#parse_json_employees('[]') == []
     end
 
     it 'should throw an error for ill-formatted json or json where the employees are missing'
