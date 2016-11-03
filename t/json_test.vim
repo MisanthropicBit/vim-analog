@@ -1,12 +1,12 @@
 describe 'json parsing'
     before
-        let g:analog#test#shifts1 = '[{"Open":"2016-04-27T09:00:00+02:00","Close":"2016-04-27T11:30:00+02:00","Employees":["A","B"]},' .
-            \ '{"Open":"2016-04-27T14:30:00+02:00","Close":"2016-04-27T17:30:00+02:00","Employees":["C","D","E"]}]'
+        let g:analog#test#shifts1 = '[{"open":"2016-04-27T09:00:00+02:00","close":"2016-04-27T11:30:00+02:00","employees":["A","B"]},' .
+            \ '{"open":"2016-04-27T14:30:00+02:00","close":"2016-04-27T17:30:00+02:00","employees":["C","D","E"]}]'
 
-        let g:analog#test#shifts2 = '[{"Open":"2016-04-27T09:30:00+02:00","Close":"2016-04-27T11:30:00+02:00","Employees":[]},' .
-            \ '{"Open":"2016-04-27T11:30:00+02:00","Close":"2016-04-27T17:00:00+02:00","Employees":[]}]'
+        let g:analog#test#shifts2 = '[{"open":"2016-04-27T09:30:00+02:00","close":"2016-04-27T11:30:00+02:00","employees":[]},' .
+            \ '{"open":"2016-04-27T11:30:00+02:00","close":"2016-04-27T17:00:00+02:00","employees":[]}]'
 
-        let g:analog#test#shifts3 = '[{"Open": "2016-04-27T09:30:00+02:00"}]'
+        let g:analog#test#shifts3 = '[{"open": "2016-04-27T09:30:00+02:00"}]'
     end
 
     after

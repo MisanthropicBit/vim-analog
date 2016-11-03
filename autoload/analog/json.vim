@@ -4,8 +4,8 @@ let s:pattern_json_time = '\v\d{4}-\d{2}-\d{2}T\zs\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{
 if !s:has_json_decode
     let s:pattern_json_open = '\v^\{\"open\":\s*(false|true)\}$'
     let s:pattern_json_open = '\v^\{\"open\":\s*(false|true)\}$'
-    let s:pattern_json_employees = '\v\"Employees\":\s*\[\zs(.{-})\ze\]'
-    let s:pattern_json_open_hours = '\v\"%(Open|Close)\":\s*\"\zs(.{-})\ze\"'
+    let s:pattern_json_employees = '\v\"employees\":\s*\[\zs(.{-})\ze\]'
+    let s:pattern_json_open_hours = '\v\"%(open|close)\":\s*\"\zs(.{-})\ze\"'
     let s:pattern_json_full_date = '\v\zs\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
 endif
 
@@ -51,8 +51,8 @@ function! analog#json#parse_json_employees(json)
 
         if type(result) == v:t_list
             for r in result
-                if type(r) == v:t_dict && has_key(r, 'Employees')
-                    call add(employees, r.Employees)
+                if type(r) == v:t_dict && has_key(r, 'employees')
+                    call add(employees, r.employees)
                 else
                     echoerr error_msg
                 endif
@@ -90,8 +90,8 @@ function! analog#json#parse_json_open_hours(json)
 
         if type(result) == v:t_list
             for r in result
-                if type(r) == v:t_dict && has_key(r, 'Open') && has_key(r, 'Close')
-                    let interval = [matchstr(r.Open, s:pattern_json_time), matchstr(r.Close, s:pattern_json_time)]
+                if type(r) == v:t_dict && has_key(r, 'open') && has_key(r, 'close')
+                    let interval = [matchstr(r.open, s:pattern_json_time), matchstr(r.close, s:pattern_json_time)]
                     call extend(intervals, interval)
                 else
                     echoerr "vim-analog: Failed to parse json for open hours"

@@ -4,7 +4,7 @@ endif
 
 " Configuration variables {{{
 " General {{{
-let g:analog#version = "0.1.0"
+let g:analog#version = "0.1.1"
 
 let g:analog#prefer_symbols = get(g:, 'analog#prefer_symbols', 1)
 let g:analog#ignore_closed = get(g:, 'analog#ignore_closed', 1)
