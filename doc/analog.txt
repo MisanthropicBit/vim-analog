@@ -1,4 +1,4 @@
-*vim-analog.txt* A plugin that informs you about the Analog café at ITU
+*vim-analog.txt* A plugin for the Analog café at the IT University of Copenhagen.
 *vim-analog*
 
                                                                    )     ~
@@ -23,8 +23,8 @@ CONTENTS                                                    *analog-contents*
 ==============================================================================
 INTRODUCTION                                                    *analog-intro*
 
-vim-analog is a plugin that informs you about opening hours and staff at the
-Analog café at the IT University of Copenhagen.
+vim-analog is a plugin for querying opening hours and staff at the Analog café
+at the IT University of Copenhagen.
 
 ==============================================================================
 REQUIREMENTS                                             *analog-requirements*
@@ -36,6 +36,14 @@ both are available, curl is arbitrarily chosen.
 CONFIGURATION                                           *analog-configuration*
 
 The given values are the defaults.
+
+* Indicate preference for curl with 'curl' or wget with 'wget'. Leaving this
+* option empty defaults to curl. >
+    g:analog#query_command_preference = 'curl'
+
+* Specify a specific command for querying the Analog API. Overrides all other
+* configurations. >
+    g:analog#query_command = ''
 
 * The symbol signalling that Analog is open. Uses the Unicode symbols U+2615
 * and U+2713 by default (if vim has +multi_byte). Otherwise, uses
