@@ -12,7 +12,7 @@ endfunction
 function! analog#is_open()
     let json = analog#web#request(g:analog#web#open_url, '')
 
-    if len(json) == 0
+    if empty(json)
         return -1
     endif
 
