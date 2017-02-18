@@ -1,7 +1,8 @@
 " Web URLs {{{
-let g:analog#web#base_url = 'https://analogio.dk/tamigo/api'
-let g:analog#web#open_url = g:analog#web#base_url . '/open'
-let g:analog#web#shifts_url = g:analog#web#base_url . '/shifts/today'
+let g:analog#web#base_url = 'https://analogio.dk/publicshiftplanning/api/%s/analog'
+let g:analog#web#open_url = printf(g:analog#web#base_url, 'open')
+let g:analog#web#shifts_url = printf(g:analog#web#base_url, 'shifts')
+let g:analog#web#shifts_today_url = printf(g:analog#web#base_url, 'shifts/today')
 " }}}
 
 " General {{{
