@@ -3,11 +3,11 @@ if exists('g:analog#web_autoloaded')
 endif
 
 function! s:AnalogCurlRequest(url, options)
-    return system("curl -s " . a:url)
+    return system("curl -s --max-time 1 " . a:url)
 endf
 
 function! s:AnalogWgetRequest(url, options)
-    return system("wget -qO - " . a:url)
+    return system("wget -q --timeout=1 -O - " . a:url)
 endfunction
 
 function! s:AnalogWebRequestMissing(url, options)
