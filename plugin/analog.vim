@@ -33,7 +33,7 @@ endif
 command! AnalogVersion echo "vim-analog v" . analog#version()
 command! AnalogOpen call analog#echo_open_status()
 command! AnalogHours call analog#echo_open_hours()
-command! AnalogStaff call analog#echo_staff()
+command! AnalogStaff call analog#echo_staff_and_hours()
 command! AnalogStaffNow call analog#echo_current_staff()
 command! AnalogTimeToClose call analog#echo_time_to_close()
 " }}}
