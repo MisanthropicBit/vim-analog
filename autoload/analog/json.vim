@@ -1,5 +1,5 @@
 let s:has_json_decode = exists('*json_decode')
-let s:pattern_json_time = '\v\d{4}-\d{2}-\d{2}T\zs\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
+let s:pattern_json_time = '\v\d{4}-\d{2}-\d{2}T\zs\d{2}:\d{2}\ze:\d{2}'
 
 if !s:has_json_decode
     let s:pattern_json_open = '\v^\{\"open\":\s*(false|true)\}$'
