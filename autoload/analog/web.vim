@@ -24,7 +24,22 @@ else
     let s:AnalogWebRequest = function("s:AnalogWebRequestMissing")
 endif
 
+" Request data from the given url with curl or wget
 function! analog#web#request(url, options)
+    " Use user supplied command
+    if !empty(g:analog#query_command)
+        return system(g:analog#query_command)
+    endif
+
+    if g:analog#query_command_preference == 'curl'
+        return s:AnalogCurlRequest(a:url, a:options)
+    elseif g:analog#query_command_preference == 'wget'
+        return s:AnalogWgetRequest(a:url, a:options)
+    elseif !empty(g:analog#query_command_preference)
+        call analog#warn(printf("Unsupported command: %s", g:analog#query_command_preference))
+        return ''
+    endif
+
     return s:AnalogWebRequest(a:url, a:options)
 endfunction
 
