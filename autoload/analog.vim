@@ -5,11 +5,14 @@ let g:analog#web#shifts_url = printf(g:analog#web#base_url, 'shifts')
 let g:analog#web#shifts_today_url = printf(g:analog#web#base_url, 'shifts/today')
 " }}}
 
-" General {{{
+" Queries {{{
+" Return the current version of vim-analog
 function! analog#version()
     return g:analog#version
 endfunction
 
+" Return 1 if Analog is open, 0 if closed or -1 if a problem
+" occured such as missing or malformed data
 function! analog#is_open()
     let json = analog#web#request(g:analog#web#open_url, '')
 
@@ -20,6 +23,7 @@ function! analog#is_open()
     return analog#json#parse_open_status(json)
 endfunction
 
+" Check if Analog is open or warn the user
 function! analog#is_open_or_echoerr()
     let state = analog#is_open()
 
@@ -36,12 +40,14 @@ function! analog#is_open_or_echoerr()
     return state
 endfunction
 
+" Get a list of names of the staff working at Analog today
 function! analog#get_staff()
     let json = analog#web#request(g:analog#web#shifts_url, '')
 
     return analog#json#parse_json_employees(json)
 endfunction
 
+" Get a list of names of the staff working at Analog right now
 function! analog#get_current_staff()
     let json = analog#web#request(g:analog#web#shifts_url, '')
     let staff = analog#json#parse_json_employees(json)
@@ -51,12 +57,15 @@ function! analog#get_current_staff()
     return (i == -1 ? [] : staff[i])
 endfunction
 
+" Get today's opening hours of Analog as a 2 element list of the opening
+" and closing time
 function! analog#get_open_hours()
     let json = analog#web#request(g:analog#web#shifts_url, '')
 
     return analog#json#parse_json_open_hours(json)
 endfunction
 
+" Collect all regex matches in a string and return them in a list
 function! analog#get_all_matches(str, pattern)
     let results = []
     call substitute(a:str, a:pattern, '\=add(results, submatch(0))', 'g')
@@ -64,10 +73,12 @@ function! analog#get_all_matches(str, pattern)
     return results
 endfunction
 
+" Return the symbol for Analog's current open status
 function! analog#get_current_symbol()
     return [g:analog#no_coffee_symbol, g:analog#coffee_symbol, g:analog#no_connection_symbol][analog#is_open()]
 endfunction
 
+" Issue a highlighted warning message
 function! analog#warn(msg)
     echohl WarningMsg
     echo "vim-analog: " . a:msg
@@ -81,14 +92,7 @@ function! analog#echo_open_status()
     echo analog#get_current_symbol()
 endfunction
 
-function! analog#echo_staff()
-    if analog#is_open_or_echoerr() > 0
-        let staff = analog#get_staff()
-
-        if empty(staff)
-            call analog#warn("No staff, Analog is closed")
-            return
-        endif
+" Echo the staff working in Analog today along with opening hours
 
         let hours = analog#get_open_hours()
         
@@ -102,6 +106,7 @@ function! analog#echo_staff()
     endif
 endfunction
 
+" Echo Analog's current staff
 function! analog#echo_current_staff()
     if analog#is_open_or_echoerr() > 0
         let staff = analog#get_current_staff()
@@ -114,6 +119,7 @@ function! analog#echo_current_staff()
     endif
 endfunction
 
+" Echo Analog's opening hours
 function! analog#echo_open_hours()
     if analog#is_open_or_echoerr() > 0
         let hours = analog#get_open_hours()
@@ -128,6 +134,7 @@ function! analog#echo_open_hours()
     endif
 endfunction
 
+" Echo the remaining time that Analog is open
 function! analog#echo_time_to_close()
     if analog#is_open_or_echoerr() > 0
         let diff = analog#time#time_to_close()
