@@ -95,10 +95,6 @@ endfunction
 
 " Echo the staff working in Analog today along with opening hours
 function! analog#echo_staff_and_hours()
-    if analog#is_open_or_echoerr() != 1
-        return
-    endif
-
     let json = analog#web#request(g:analog#web#shifts_today_url, '')
     let staff = analog#json#parse_employees(json, 'employees')
 
@@ -114,10 +110,6 @@ endfunction
 
 " Echo Analog's current staff
 function! analog#echo_current_staff()
-    if analog#is_open_or_echoerr() != 1
-        return
-    endif
-
     let staff = analog#get_current_staff()
 
     if empty(staff)
@@ -129,10 +121,6 @@ endfunction
 
 " Echo Analog's opening hours
 function! analog#echo_open_hours()
-    if analog#is_open_or_echoerr() != 1
-        return
-    endif
-
     let hours = analog#get_open_hours()
 
     if empty(hours)
@@ -144,10 +132,6 @@ endfunction
 
 " Echo the remaining time that Analog is open
 function! analog#echo_time_to_close()
-    if analog#is_open_or_echoerr() != 1
-        return
-    endif
-
     let diff = analog#time#time_to_close()
 
     if empty(diff)
