@@ -71,10 +71,10 @@ function! analog#get_all_matches(str, pattern)
 endfunction
 
 " Return the symbol for Analog's current open status
-function! analog#get_current_symbol()
+function! analog#get_symbol(state)
     return [g:analog#no_coffee_symbol,
            \g:analog#coffee_symbol,
-           \g:analog#no_connection_symbol][analog#is_open()]
+           \g:analog#no_connection_symbol][a:state]
 endfunction
 
 " Issue a highlighted warning message
@@ -88,7 +88,9 @@ endfunction
 " Echo commands {{{
 " Echo if Analog is open or not
 function! analog#echo_open_status()
-    echo analog#get_current_symbol()
+    let state = analog#is_open_or_echoerr()
+
+    echo analog#get_symbol(state)
 endfunction
 
 " Echo the staff working in Analog today along with opening hours
