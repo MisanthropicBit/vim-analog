@@ -64,10 +64,6 @@ The given values are the defaults.
 * compiled with multi_byte. >
     g:analog#prefer_symbols = 1
 <
-* If enabled, outputs information about Analog even when it is closed, instead
-* of issuing an error message. >
-    g:analog#ignore_closed = 1
-<
 ==============================================================================
 COMMANDS                                                     *analog-commands*
 
@@ -96,14 +92,6 @@ COMMANDS                                                     *analog-commands*
 
 ==============================================================================
 TROUBLESHOOTING                                       *analog-troubleshooting*
-
-Q: Why does the plugin report that Analog is closed even though
-   |g:analog#ignore_closed| is set to 1?
-A: Sometimes Analog is closed for the entire day due to exams etc. In this
-   case, no data is returned from the Analog API and so there is no data to
-   display. The |g:analog#ignore_closed| option is only relevant when Analog
-   is closed at the time the query, but will or has been open at some other
-   time.
 
 ==============================================================================
 CONTRIBUTIONS                                           *analog-contributions*

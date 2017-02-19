@@ -7,7 +7,6 @@ endif
 let g:analog#version = "0.1.1"
 
 let g:analog#prefer_symbols = get(g:, 'analog#prefer_symbols', 1)
-let g:analog#ignore_closed = get(g:, 'analog#ignore_closed', 1)
 
 let g:analog#query_command_preference = get(g:, 'analog#query_command_preference', 'curl')
 let g:analog#query_command = get(g:, 'analog#query_command', '')

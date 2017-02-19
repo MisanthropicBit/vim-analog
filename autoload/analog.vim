@@ -28,10 +28,6 @@ function! analog#is_open_or_echoerr()
     let state = analog#is_open()
 
     if state == 0
-        if g:analog#ignore_closed
-            return 1
-        endif
-
         call analog#warn("Analog is closed")
     elseif state == -1
         call analog#warn("No connection, or service is unavailable")
