@@ -46,14 +46,14 @@ function! analog#json#parse_employee(employee)
 endfunction
 
 function! analog#json#parse_employees(json, employee_type)
-    let error_msg = "vim-analog: Failed to parse json for employees"
+    let error_msg = "Failed to parse json for employees"
     let employees = []
 
     if s:has_json_decode
         try
             let result = json_decode(a:json)
         catch /^Vim\%((\a\+)\)\=:E474/
-            call analog#warn(error_msg . " (" . v:exception . ")")
+            echoerr "vim-analog: " . error_msg . " (" . v:exception . ")")
             return []
         endtry
 
