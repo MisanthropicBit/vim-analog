@@ -1,3 +1,4 @@
+" Get the difference in hours and minutes between two timepoints
 function! analog#time#diff(from, to)
     " Do not waste time calculating time differences between times on
     " different days
@@ -12,6 +13,7 @@ function! analog#time#diff(from, to)
     return [diff / 60 / 60, diff / 60 % 60]
 endfunction
 
+" Return the index in the list of intervals which includes a given timepoint
 function! analog#time#in_interval(time, intervals)
     let [cur_hours, cur_mins] = a:time
     let seconds = cur_hours * 60 * 60 + cur_mins * 60
@@ -30,6 +32,7 @@ function! analog#time#in_interval(time, intervals)
     return -1
 endfunction
 
+" Calculate the hours and minutes until Analog closes
 function! analog#time#time_to_close()
     let temp = analog#get_open_hours()
 
