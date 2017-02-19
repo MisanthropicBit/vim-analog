@@ -9,8 +9,8 @@ let g:analog#version = "0.1.1"
 let g:analog#prefer_symbols = get(g:, 'analog#prefer_symbols', 1)
 let g:analog#ignore_closed = get(g:, 'analog#ignore_closed', 1)
 
-let g:analog#query_command_preference = 'curl'
-let g:analog#query_command = ''
+let g:analog#query_command_preference = get(g:, 'analog#query_command_preference', 'curl')
+let g:analog#query_command = get(g:, 'analog#query_command', '')
 
 if has('multi_byte') && g:analog#prefer_symbols != 0
     " The unicode representation of the coffee cup symbol,
@@ -18,13 +18,13 @@ if has('multi_byte') && g:analog#prefer_symbols != 0
     "
     " Note: Extra space inserted after the coffee cup symbol,
     " since vim represents the symbol width incorrectly
-    let g:analog#coffee_symbol = '☕  ✓'
-    let g:analog#no_coffee_symbol = '☕  ✗'
-    let g:analog#no_connection_symbol = '☕  ?'
+    let g:analog#coffee_symbol = get(g:, 'analog#coffee_symbol', '☕  ✓')
+    let g:analog#no_coffee_symbol = get(g:, 'analog#no_coffee_symbol', '☕  ✗')
+    let g:analog#no_connection_symbol = get(g:, 'analog#no_connection_symbol', '☕  ?')
 else
-    let g:analog#coffee_symbol = 'Analog is open'
-    let g:analog#no_coffee_symbol = 'Analog is closed'
-    let g:analog#no_connection_symbol = 'No connection'
+    let g:analog#coffee_symbol = get(g:, 'analog#coffee_symbol', 'Analog is open')
+    let g:analog#no_coffee_symbol = get(g:, 'analog#no_coffee_symbol', 'Analog is closed')
+    let g:analog#no_connection_symbol = get(g:, 'analog#no_connection_symbol', 'No connection')
 
     if g:analog#prefer_symbols
         let g:analog#prefer_symbols = 0
