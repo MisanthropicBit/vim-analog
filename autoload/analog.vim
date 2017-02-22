@@ -36,20 +36,6 @@ function! analog#is_open_or_echoerr()
     return state
 endfunction
 
-" Get a list of names of the staff working at Analog today
-function! analog#get_staff()
-    let json = analog#web#request(g:analog#web#shifts_today_url, '')
-
-    return analog#json#parse_json_employees(json)
-endfunction
-
-" Get a list of names of the staff working at Analog right now
-function! analog#get_current_staff()
-    let json = analog#web#request(g:analog#web#shifts_today_url, '')
-
-    return analog#json#parse_employees(json, 'checkedInEmployees')
-endfunction
-
 " Get today's opening hours of Analog as a 2 element list of the opening
 " and closing time
 function! analog#get_open_hours()
@@ -100,19 +86,38 @@ function! analog#echo_staff_and_hours()
     endif
 
     let hours = analog#json#parse_open_hours(json)
+    let maxlen = max(map(copy(staff), 'len(join(v:val, ", "))'))
 
-    echo printf("%s (%s - %s)", join(staff, ", "), hours[0], hours[1])
+    for i in range(len(staff))
+        let names = join(staff[i], ", ")
+
+        echo printf("%s%s(%s - %s)",
+                   \names,
+                   \repeat(' ', maxlen - len(names) + 1),
+                   \hours[i][0], hours[i][1])
+    endfor
 endfunction
 
 " Echo Analog's current staff
 function! analog#echo_current_staff()
-    let staff = analog#get_current_staff()
+    let json = analog#web#request(g:analog#web#shifts_today_url, '')
+    let staff = analog#json#parse_employees(json, 'employees')
 
     if empty(staff)
         call analog#warn("Analog is closed")
-    else
-        echo join(staff, ', ')
+        return
     endif
+
+    let hours = analog#json#parse_open_hours(json)
+    let current_time = analog#time#now()
+    let idx = index(map(copy(hours), 'analog#time#in_interval(' . string(current_time) . ', v:val)'), 1)
+
+    if idx == -1
+        call analog#warn("Analog is closed")
+        return
+    endif
+
+    echo join(staff[idx], ', ')
 endfunction
 
 " Echo Analog's opening hours
@@ -121,20 +126,24 @@ function! analog#echo_open_hours()
 
     if empty(hours)
         call analog#warn("Analog is closed")
-    else
-        echo printf("%s - %s", hours[0], hours[1])
+        return
     endif
+
+    echo join(map(hours, "v:val[0] . ' - ' . v:val[1]"), "\n")
 endfunction
 
 " Echo the remaining time that Analog is open
 function! analog#echo_time_to_close()
-    let diff = analog#time#time_to_close()
+    let hours = analog#get_open_hours()
+    let diff = analog#time#time_to_close(hours)
 
     if empty(diff)
         call analog#warn("Analog is closed")
     else
         if diff[0] < 0 || diff[1] < 0
-            echo printf("Analog closed %s hour(s) and %s minute(s) ago", diff[0], diff[1])
+            echo printf("Analog closed %s hour(s) and %s minute(s) ago",
+                        \abs(diff[0]),
+                        \abs(diff[1]))
         else
             echo printf("Analog closes in %s hour(s) and %s minute(s)", diff[0], diff[1])
         endif

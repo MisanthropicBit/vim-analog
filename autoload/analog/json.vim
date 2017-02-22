@@ -65,6 +65,8 @@ function! analog#json#parse_employees(json, employee_type)
 
         for r in result
             if type(r) == v:t_dict && has_key(r, a:employee_type)
+                let temp = []
+
                 for e in r.employees
                     let employee = analog#json#parse_employee(e)
 
@@ -73,8 +75,10 @@ function! analog#json#parse_employees(json, employee_type)
                         return []
                     endif
 
-                    call add(employees, employee)
+                    call add(temp, employee)
                 endfor
+
+                call add(employees, temp)
             else
                 call analog#warn(error_msg)
             endif
@@ -109,8 +113,9 @@ function! analog#json#parse_open_hours(json)
         if type(result) == v:t_list
             for r in result
                 if type(r) == v:t_dict && has_key(r, 'start') && has_key(r, 'end')
-                    let interval = [matchstr(r.start, s:pattern_json_time), matchstr(r.end, s:pattern_json_time)]
-                    call extend(intervals, interval)
+                    let interval = [matchstr(r.start, s:pattern_json_time),
+                                   \matchstr(r.end, s:pattern_json_time)]
+                    call add(intervals, interval)
                 else
                     echoerr "vim-analog: Failed to parse json for open hours"
                     return []

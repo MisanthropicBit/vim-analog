@@ -18,35 +18,27 @@ function! analog#time#diff(from, to)
     return [diff / 60 / 60, diff / 60 % 60]
 endfunction
 
-" Return the index in the list of intervals which includes a given timepoint
-function! analog#time#in_interval(time, intervals)
+" Return 1 if the time lies in the given interval, 0 otherwise
+function! analog#time#in_interval(time, interval)
     let [cur_hours, cur_mins] = a:time
     let seconds = cur_hours * 60 * 60 + cur_mins * 60
 
-    for i in range(0, len(a:intervals) - 1, 2)
-        let [min_hour, min_mins] = split(a:intervals[i], ':')
-        let [max_hour, max_mins] = split(a:intervals[i + 1], ':')
-        let minseconds = min_hour * 60 * 60 + min_mins * 60
-        let maxseconds = max_hour * 60 * 60 + max_mins * 60
+    let [min_hour, min_mins] = split(a:interval[0], ':')
+    let [max_hour, max_mins] = split(a:interval[1], ':')
+    let minseconds = min_hour * 60 * 60 + min_mins * 60
+    let maxseconds = max_hour * 60 * 60 + max_mins * 60
 
-        if seconds >= minseconds && seconds <= maxseconds
-            return i / 2
-        endif
-    endfor
-
-    return -1
+    return seconds >= minseconds && seconds <= maxseconds
 endfunction
 
 " Calculate the hours and minutes until Analog closes
-function! analog#time#time_to_close()
-    let temp = analog#get_open_hours()
-
-    if empty(temp)
+function! analog#time#time_to_close(hours)
+    if empty(a:hours)
         return []
     endif
 
-    let current_time = split(strftime('%H:%M'), ':')
-    let analog_times = split(analog#get_open_hours()[-1], ':')
+    let current_time = analog#time#now()
+    let analog_times = split(a:hours[-1][1], ':')
 
     return analog#time#diff(current_time, analog_times)
 endfunction
