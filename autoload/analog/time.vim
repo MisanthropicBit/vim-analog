@@ -1,3 +1,8 @@
+" Get the current time in hours and minutes
+function! analog#time#now()
+    return split(strftime('%H:%M'), ':')
+endfunction
+
 " Get the difference in hours and minutes between two timepoints
 function! analog#time#diff(from, to)
     " Do not waste time calculating time differences between times on
