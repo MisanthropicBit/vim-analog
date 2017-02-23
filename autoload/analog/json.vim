@@ -53,7 +53,7 @@ function! analog#json#parse_employees(json, employee_type)
         try
             let result = json_decode(a:json)
         catch /^Vim\%((\a\+)\)\=:E474/
-            echoerr "vim-analog: " . error_msg . " (" . v:exception . ")")
+            echoerr "vim-analog: " . error_msg . " (" . v:exception . ")"
             return []
         endtry
 
