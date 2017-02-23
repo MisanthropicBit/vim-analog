@@ -16,11 +16,16 @@ describe 'time functions'
     end
 
     it 'should return the correct index for an time interval'
-        Expect analog#time#in_interval([15, 46], ['9:30', '11:30', '14:30', '17:30']) == 1
-        Expect analog#time#in_interval([9, 31], ['9:30', '11:30', '14:30', '17:30']) == 0
-        Expect analog#time#in_interval([13, 51], ['9:30', '11:30', '14:30', '17:30']) == -1
-        Expect analog#time#in_interval([9, 29], ['9:30', '11:30', '14:30', '17:30']) == -1
-        Expect analog#time#in_interval([22, 25], ['9:30', '11:30', '14:30', '17:30']) == -1
-        Expect analog#time#in_interval([12, 00], ['12:00', '12:00']) == 0
+        Expect analog#time#in_interval([15, 46], ['9:30', '11:30']) == 0
+        Expect analog#time#in_interval([15, 46], ['14:30', '17:30']) == 1
+        Expect analog#time#in_interval([9, 31], ['9:30', '11:30',]) == 1
+        Expect analog#time#in_interval([9, 31], ['14:30', '17:30']) == 0
+        Expect analog#time#in_interval([13, 51], ['9:30', '11:30']) == 0
+        Expect analog#time#in_interval([13, 51], ['14:30', '17:30']) == 0
+        Expect analog#time#in_interval([9, 29], ['9:30', '11:30']) == 0
+        Expect analog#time#in_interval([9, 29], ['14:30', '17:30']) == 0
+        Expect analog#time#in_interval([22, 25], ['9:30', '11:30']) == 0
+        Expect analog#time#in_interval([22, 25], ['14:30', '17:30']) == 0
+        Expect analog#time#in_interval([12, 00], ['12:00', '12:00']) == 1
     end
 end
