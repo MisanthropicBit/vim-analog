@@ -44,14 +44,6 @@ function! analog#get_open_hours()
     return analog#json#parse_open_hours(json)
 endfunction
 
-" Collect all regex matches in a string and return them in a list
-function! analog#get_all_matches(str, pattern)
-    let results = []
-    call substitute(a:str, a:pattern, '\=add(results, submatch(0))', 'g')
-
-    return results
-endfunction
-
 " Return the symbol for Analog's current open status
 function! analog#get_symbol(state)
     return [g:analog#no_coffee_symbol,

@@ -8,6 +8,14 @@ if !s:has_json_decode
     let s:pattern_json_full_date = '\v\zs\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
 endif
 
+" Collect all regex matches in a string and return them in a list
+function! analog#json#get_all_matches(str, pattern)
+    let results = []
+    call substitute(a:str, a:pattern, '\=add(results, submatch(0))', 'g')
+
+    return results
+endfunction
+
 function! analog#json#parse_open_status(json)
     if s:has_json_decode
         try
@@ -89,7 +97,7 @@ function! analog#json#parse_employees(json, employee_type)
             echoerr error_msg
         endif
 
-        let employees = analog#get_all_matches(a:json, s:pattern_json_employees)
+        let employees = analog#json#get_all_matches(a:json, s:pattern_json_employees)
 
         if empty(employees)
             echoerr error_msg
@@ -122,7 +130,7 @@ function! analog#json#parse_open_hours(json)
             endfor
         endif
     else
-        let hours = analog#get_all_matches(a:json, s:pattern_json_open_hours)
+        let hours = analog#json#get_all_matches(a:json, s:pattern_json_open_hours)
 
         for h in hours
             call add(intervals, matchstr(h, s:pattern_json_time))
