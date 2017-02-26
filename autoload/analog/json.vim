@@ -3,7 +3,6 @@ let s:pattern_json_time = '\v\d{4}-\d{2}-\d{2}T\zs\d{2}:\d{2}\ze:\d{2}'
 
 if !s:has_json_decode
     let s:pattern_json_open = '\v^\{\"open\":\s*(false|true)\}$'
-    let s:pattern_json_open = '\v^\{\"open\":\s*(false|true)\}$'
     let s:pattern_json_employees = '\v\"employees\":\s*\[\zs(.{-})\ze\]'
     let s:pattern_json_open_hours = '\v\"%(open|close)\":\s*\"\zs(.{-})\ze\"'
     let s:pattern_json_full_date = '\v\zs\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\ze:\d{2}%(\+|-)\d{2}:\d{2}'
