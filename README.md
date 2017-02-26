@@ -9,7 +9,8 @@ See the list of suggested [future improvements](/FUTURE.md).
 
 ## Requirements
 
-`vim-analog` needs either `curl` or `wget` installed.
+`vim-analog` needs either `curl` or `wget` installed and at least `vim` 7.4.1154
+for json support.
 
 ## Installation
 
