@@ -7,8 +7,6 @@ See the list of suggested [future improvements](/FUTURE.md).
 
 ![Example of using vim-analog](/demo.gif?raw=true)
 
-<!--[Contributions are always welcome](https://github.com/MisanthropicBit/vim-analog/CONTRIBUTING.md)!-->
-
 ## Requirements
 
 `vim-analog` needs either `curl` or `wget` installed.
