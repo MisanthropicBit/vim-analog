@@ -30,7 +30,9 @@ at the IT University of Copenhagen.
 REQUIREMENTS                                             *analog-requirements*
 
 To query the Analog API, vim-analog needs either curl or wget installed. If
-both are available, curl is arbitrarily chosen.
+both are available, curl is arbitrarily chosen. At least version 7.4.1154 is
+also required for JSON support in order to parse the result returned from the
+query.
 
 ==============================================================================
 CONFIGURATION                                           *analog-configuration*
