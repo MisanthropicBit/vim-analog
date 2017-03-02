@@ -78,14 +78,14 @@ function! analog#echo_staff_and_hours()
     endif
 
     let hours = analog#json#parse_open_hours(json)
-    let maxlen = max(map(copy(staff), 'len(join(v:val, ", "))'))
+    let maxlen = max(map(copy(staff), 'strchars(join(v:val, ", "))'))
 
     for i in range(len(staff))
         let names = join(staff[i], ", ")
 
         echo printf("%s%s(%s - %s)",
                    \names,
-                   \repeat(' ', maxlen - len(names) + 1),
+                   \repeat(' ', maxlen - strchars(names) + 1),
                    \hours[i][0], hours[i][1])
     endfor
 endfunction
