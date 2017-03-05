@@ -23,19 +23,6 @@ function! analog#is_open()
     return analog#json#parse_open_status(json)
 endfunction
 
-" Check if Analog is open or warn the user
-function! analog#is_open_or_echoerr()
-    let state = analog#is_open()
-
-    if state == 0
-        call analog#warn("Analog is closed")
-    elseif state == -1
-        call analog#warn("No connection, or service is unavailable")
-    endif
-
-    return state
-endfunction
-
 " Get today's opening hours of Analog as a 2 element list of the opening
 " and closing time
 function! analog#get_open_hours()
@@ -62,7 +49,7 @@ endfunction
 " Echo commands {{{
 " Echo if Analog is open or not
 function! analog#echo_open_status()
-    let state = analog#is_open_or_echoerr()
+    let state = analog#is_open()
 
     echo analog#get_symbol(state)
 endfunction
