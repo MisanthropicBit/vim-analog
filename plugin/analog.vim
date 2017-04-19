@@ -29,7 +29,16 @@ else
         let g:analog#prefer_symbols = 0
     endif
 endif
+
+let g:analog#notification = get(g:, 'analog#notification', 0)
+let g:analog#notify_before_close = get(g:, 'analog#notify_before_close', 300)
+let g:analog#notification_sound = get(g:, 'analog#notification_sound', 'Hero')
 " }}}
+
+if g:analog#notification && analog#notifications#supported()
+    "call timer_start(0, 'analog#notifications#setup')
+    call analog#notifications#setup()
+endif
 
 " Commands {{{
 command! AnalogVersion echo "vim-analog v" . analog#version()
